@@ -541,7 +541,7 @@ function m2Result(){return formHTML(false)}
 
 function m3Blank(){
   return `<div class="browser">
-    <div class="url">◀ ▶ ↻ <span>https://www.oo-global.example/investors</span></div>
+    <div class="url">◀ ▶ ↻ <span id="t-url">https://www.oo-global.example/investors</span></div>
     <div class="site">
       <div class="s-nav"><b class="s-logo">OO GLOBAL<span>INSURANCE GROUP</span></b><nav><span>About us</span><span>Products</span><u>Investors</u><span>Newsroom</span><span>Sustainability</span><span>Careers</span></nav></div>
       <div class="s-hero"><h3>Investor Relations</h3><p>Results, reports and presentations for shareholders and analysts.</p></div>
@@ -644,7 +644,7 @@ const MISSIONS=[
   prompt:'OO Global Insurance의 최근 실적을 정리해줘. 2025년 연간과 2026년 상반기 기준 총보험료, 영업이익, 순이익, 합산비율, 지급여력비율을 표로 만들고 전년 대비 증감을 계산해줘. 시사점 3개와 출처 링크도 달아줘.',
   keywords:['최근 실적','2025년 연간과 2026년 상반기','표로','전년 대비 증감','시사점 3개','출처 링크'],
   steps:[
-    {t:'웹 검색 · IR 페이지 탐색',d:'실적 발표 보도자료 · 보고서 3건 확인',g:'WEB · 3건',sel:'#t-news'},
+    {t:'웹 검색 · IR 페이지 탐색',d:'실적 발표 보도자료 · 보고서 3건 확인',g:'WEB · 3건',sel:'#t-url'},
     {t:'Annual Report 312p 분석',d:'2025 연간 보험료 · 이익 · 합산비율 추출',g:'E-01 p.14–22',sel:'#t-ar'},
     {t:'상반기 실적 비교',d:'2026 상반기 지표 · 전년 대비 증감 계산',g:'E-02 p.5–9',sel:'#t-h1'},
     {t:'지급여력비율 확인',d:'Solvency II 비율 201% 확인',g:'E-03 p.31',sel:'#t-sfcr'}],
@@ -720,7 +720,7 @@ function goIdle(){closeGate();st.playing=false;st.mi=-1;st.phase=-1;S.clear();S.
 function jump(d){if(!st.playing)return;const n=Math.max(0,Math.min(PHASES.length-1,st.phase+d));startMission(st.mi,n)}
 function stageRect(el){const r=el.getBoundingClientRect(),g=stage.getBoundingClientRect(),k=st.scale;return {x:(r.left-g.left)/k,y:(r.top-g.top)/k,w:r.width/k,h:r.height/k}}
 function openGate(sel,label,fn,pos){
-  const el=$(sel);if(!el){if(fn)fn();return}
+  let el=$(sel);if(el&&!el.getClientRects().length)el=$('#win .win-body');if(!el){if(fn)fn();return}
   closeGate();S.gated=true;stage.classList.add('gated');el.classList.add('gate');
   const r=stageRect(el),h=document.createElement('div');h.className='ghint';
   const pad=6;h.style.left=(r.x-pad)+'px';h.style.top=(r.y-pad)+'px';h.style.width=(r.w+pad*2)+'px';h.style.height=(r.h+pad*2)+'px';
@@ -756,7 +756,7 @@ function timerRun(c,from,to,off,dur,steps){
 function relRect(el){const w=$('#win').getBoundingClientRect(),r=el.getBoundingClientRect(),s=st.scale;
   return {x:(r.left-w.left)/s,y:(r.top-w.top)/s,w:r.width/s,h:r.height/s}}
 function clearHits(){$$('.hit').forEach(e=>e.classList.remove('hit'));$$('.hit-tag').forEach(e=>e.remove())}
-function hit(sel,tag){const el=$(sel);if(!el)return;clearHits();el.classList.add('hit');
+function hit(sel,tag){const el=$(sel);if(!el||!el.getClientRects().length)return;clearHits();el.classList.add('hit');
   const r=relRect(el),t=document.createElement('div');t.className='hit-tag';t.textContent=tag;
   t.style.left=Math.max(8,r.x)+'px';t.style.top=Math.max(48,r.y-26)+'px';$('#win').appendChild(t);
   const sc=$('#win .scan');sc.classList.remove('go');void sc.offsetWidth;sc.classList.add('go')}
