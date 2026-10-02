@@ -462,6 +462,7 @@ button{font:inherit;color:inherit}
       <button class="btn on" id="bsound">소리: 켜짐</button>
       <button class="btn" id="bfull">전체 화면</button>
       <span class="readout" id="readout">대기 화면</span>
+      <span class="readout" id="vstat"></span>
     </div>
   </div>
 
@@ -866,40 +867,67 @@ const hat=(d,t,v)=>iNoise(d,t,.05,v,'highpass',7500);
 const rim=(d,t,v)=>{iNoise(d,t,.09,v,'bandpass',2200,1.2);iTone(d,62,t,.05,v*.5,'triangle')};
 const snare=(d,t,v)=>{iNoise(d,t,.16,v,'bandpass',1700,.7);iTone(d,55,t,.08,v*.4,'triangle')};
 
-/* 미션별 BGM (자체 작곡 · 실시간 합성) */
+/* 오케스트라풍 악기 */
+function iStr(dst,n,t,dur,v){const c=AU.ctx,f=c.createBiquadFilter(),g=c.createGain();f.type='lowpass';f.frequency.value=2400;f.Q.value=.7;
+  vEnv(g,t,.004,v,dur);f.connect(g);g.connect(dst);[-9,9].forEach(dt=>{const o=c.createOscillator();o.type='sawtooth';o.frequency.value=mtof(n);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+dur+.05)})}
+function iBrass(dst,notes,t,dur,v){const c=AU.ctx,f=c.createBiquadFilter(),g=c.createGain();f.type='lowpass';f.Q.value=2;
+  f.frequency.setValueAtTime(450,t);f.frequency.linearRampToValueAtTime(2800,t+Math.min(.09,dur*.4));f.frequency.linearRampToValueAtTime(1300,t+dur);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.03);g.gain.setValueAtTime(v,t+dur*.6);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  f.connect(g);g.connect(dst);const sg=c.createGain();sg.gain.value=.18;g.connect(sg);sg.connect(AU.dly);
+  notes.forEach(n=>[-12,0,11].forEach(dt=>{const o=c.createOscillator();o.type='sawtooth';o.frequency.value=mtof(n);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+dur+.05)}))}
+function iBongo(dst,t,hi,v){const c=AU.ctx,o=c.createOscillator(),g=c.createGain(),f0=hi?430:300;o.type='sine';o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f0*.72,t+.09);
+  vEnv(g,t,.002,v,.13);o.connect(g);g.connect(dst);o.start(t);o.stop(t+.18);iNoise(dst,t,.02,v*.35,'bandpass',3200,1.5)}
+function iTom(dst,t,v,f0){const c=AU.ctx,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(f0||170,t);o.frequency.exponentialRampToValueAtTime((f0||170)*.55,t+.22);
+  vEnv(g,t,.003,v,.3);o.connect(g);g.connect(dst);o.start(t);o.stop(t+.35)}
+function iTimp(dst,t,v,n){const c=AU.ctx,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(mtof(n||31)*1.04,t);o.frequency.exponentialRampToValueAtTime(mtof(n||31),t+.15);
+  vEnv(g,t,.004,v,1.3);o.connect(g);g.connect(dst);o.start(t);o.stop(t+1.4);iNoise(dst,t,.35,v*.3,'lowpass',500)}
+function iLead(dst,n,t,dur,v){const c=AU.ctx,o=c.createOscillator(),o2=c.createOscillator(),lfo=c.createOscillator(),lg=c.createGain(),f=c.createBiquadFilter(),g=c.createGain();
+  o.type='sawtooth';o2.type='square';o.frequency.value=o2.frequency.value=mtof(n);o2.detune.value=-6;lfo.frequency.value=5.5;lg.gain.value=6;lfo.connect(lg);lg.connect(o.detune);lg.connect(o2.detune);
+  f.type='lowpass';f.frequency.value=3000;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.04);g.gain.setValueAtTime(v,t+dur*.75);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(f);o2.connect(f);f.connect(g);g.connect(dst);const sg=c.createGain();sg.gain.value=.25;g.connect(sg);sg.connect(AU.dly);
+  [o,o2,lfo].forEach(x=>{x.start(t);x.stop(t+dur+.05)})}
+const shaker=(d,t,v)=>iNoise(d,t,.045,v,'highpass',6500);
+
+/* 미션별 BGM — 첩보 액션 스타일 자체 작곡 (5/4박자, 실시간 합성) */
 const TRACKS={
-  amb:{bpm:56,div:1,vol:.32,play(d,s,t,sp){            /* 지령 대기: 심장 박동 + 저음 드론 */
-    iKick(d,t,.45);iKick(d,t+.2,.22);
-    if(s%4===0)iPad(d,[45,52,57],t,sp*4.2,.05);
-    if(s%8===6)iTone(d,81,t,1.4,.05,'sine',.5)}},
-  m1:{bpm:96,div:2,swing:.2,vol:.55,play(d,s,t,sp){     /* 투자 심사 잠입: 누아르 재즈 */
-    const bar=Math.floor(s/8)%4,pos=s%8;
-    const walk=[[40,43,45,46],[45,48,52,43],[42,45,48,46],[47,46,44,43]];
-    const ch=[[55,59,62,66],[60,64,67,71],[57,60,64,69],[57,63,66,72]];
-    if(pos%2===0)iBass(d,walk[bar][pos/2],t,sp*1.9,.5,'triangle',900);
-    if([0,2,3,4,6,7].includes(pos))hat(d,t,pos%2?.05:.08);
-    if(pos===2||pos===6)rim(d,t,.16);
-    if(pos===3)ch[bar].forEach(n=>iTone(d,n,t,1.3,.045,'sine',.35));
-    if(bar%2===0){const mel={0:52,1:55,3:59,5:58};if(mel[pos]!==undefined)iTone(d,mel[pos],t,.28,.07,'square',.25)}}},
-  m2:{bpm:138,div:4,vol:.48,play(d,s,t,sp){              /* 긴급 출국: 질주하는 액션 */
-    const bar=Math.floor(s/16)%4,pos=s%16;
-    const root=[38,34,36,33][bar],ch=[[62,65,69],[62,65,70],[64,67,72],[61,64,69]][bar];
-    iBass(d,root+(pos%4===2?12:0),t,sp*.9,.32,'sawtooth',480);
-    if(pos===0||pos===8||(bar===3&&pos===10))iKick(d,t,.85);
-    if(pos===4||pos===12)snare(d,t,.3);
-    if(pos%2===0)hat(d,t,pos%4===2?.07:.04);
-    if(pos%4===0)iTone(d,96,t,.03,.08,'square');
-    if(pos===0||pos===6||pos===11)ch.forEach(n=>iTone(d,n,t,.13,.06,'sawtooth'));
-    if(bar===3&&pos>=12)iTone(d,74+(pos-12),t,.12,.05,'sawtooth',.2)}},
-  m3:{bpm:104,div:4,vol:.55,play(d,s,t,sp){              /* 정보 확보: 잠입 · 소나 */
-    const bar=Math.floor(s/16)%4,pos=s%16;
-    const root=[36,32,29,31][bar],arp=[[60,63,67,70],[56,60,63,68],[53,56,60,65],[55,59,62,67]][bar],ord=[0,1,2,3,2,1,0,2];
-    if(pos%2===0)iBass(d,root,t,sp*1.5,.42,'triangle',320);
-    iTone(d,arp[ord[pos%8]]+12,t,.16,.035,'triangle',.3);
-    if(pos===0||pos===10)iKick(d,t,.5);
-    if(pos%4===2)hat(d,t,.04);
-    if(pos===0)iPad(d,arp.slice(0,3).map(n=>n-12),t,sp*16,.025);
-    if(bar===0&&pos===0)iTone(d,84,t,1.8,.09,'sine',.6)}}
+  amb:{bpm:60,div:1,vol:.4,play(d,s,t,sp){                /* 지령 대기: 도화선 + 심장 박동 + 초침 */
+    iKick(d,t,.5);iKick(d,t+.22,.25);iTone(d,96,t+.5,.03,.05,'square');
+    iNoise(d,t,sp*1.05,.035,'bandpass',3400,3);
+    if(s%4===0)iPad(d,[43,50,56],t,sp*4.3,.05);
+    if(s%4===3)iStr(d,55+(s%8===3?1:0),t,sp*.9,.04)}},
+  m1:{bpm:132,div:2,vol:.5,play(d,s,t,sp){                 /* 미션 01 · 잠입 작전 (G minor) */
+    const bar=Math.floor(s/10)%4,pos=s%10,cyc=Math.floor(s/40)%2,root=[43,43,46,44][bar];
+    const pat=['A','r','A','-','r','A','r','A','-','L'][pos];
+    if(pat==='A'){iStr(d,root,t,sp*.8,.22);iStr(d,root+12,t,sp*.8,.1)}
+    else if(pat==='r')iStr(d,root,t,sp*.6,.12);
+    else if(pat==='L')iStr(d,root-1,t,sp*.7,.14);
+    const acc=[0,2,5,7].includes(pos);iBongo(d,t,pos%2===0,acc?.28:.12);shaker(d,t,.03);
+    if(pos===0&&(bar===0||bar===2))iTimp(d,t,.55,root-12);
+    if(bar===3&&acc)iBrass(d,[root+12,root+15,root+19],t,.22,.06);
+    if(bar===1&&pos===8)iBrass(d,[root+12,root+16,root+19],t,sp*2.2,.05);
+    if(cyc===1){const L=[[[0,67,4],[5,70,2],[7,69,3]],[[0,74,5],[7,72,3]],[[0,70,4],[5,72,2],[7,74,3]],[[0,75,5],[5,74,2],[7,72,3]]][bar];
+      L.forEach(([p,n,l])=>{if(p===pos)iLead(d,n,t,sp*l,.045)})}}},
+  m2:{bpm:156,div:4,vol:.46,play(d,s,t,sp){                /* 미션 02 · 긴급 출국 (D minor) */
+    const bar=Math.floor(s/20)%4,pos=s%20,root=[38,38,41,39][bar],grp=[0,4,10,14];
+    iStr(d,root+(grp.includes(pos)?12:0),t,sp*.85,grp.includes(pos)?.16:.08);
+    if(grp.includes(pos))iTom(d,t,.45,pos===10?140:190);
+    if(pos===0||pos===14)iKick(d,t,.8);
+    if(pos===10)snare(d,t,.32);
+    if(pos%2===0)hat(d,t,.04);
+    if(pos%4===0)iTone(d,96,t,.025,.07,'square');
+    if(bar===0&&pos===0)iTimp(d,t,.7,root-12);
+    if((bar===1||bar===3)&&(pos===0||pos===4))iBrass(d,[root+12,root+15,root+19],t,.2,.07);
+    if(bar===2&&pos===10)iBrass(d,[root+12,root+15,root+20],t,sp*8,.055);
+    if(bar===3&&pos>=10)iStr(d,root+24+(pos-10),t,sp*.9,.07)}},
+  m3:{bpm:120,div:2,vol:.52,play(d,s,t,sp){                /* 미션 03 · 정보 확보 (C minor) */
+    const bar=Math.floor(s/10)%4,pos=s%10,root=[36,36,32,31][bar];
+    const arp=[0,7,12,7,3,10,7,3,0,-1][pos];iTone(d,root+12+arp,t,.14,.07,'triangle',.25);
+    const acc=[0,3,5,8].includes(pos);
+    if(acc){iStr(d,root,t,sp*.9,.16);iBongo(d,t,pos===3||pos===8,.22)}
+    if(pos===0||pos===5)iTom(d,t,.3,120);
+    shaker(d,t,.025);
+    if(bar===0&&pos===0)iTone(d,84,t,1.8,.08,'sine',.6);
+    if(pos===0&&bar%2===0)iBrass(d,[root,root+7],t,sp*9,.035)}}
 };
 function bgmStart(key){
   if(!auInit())return;if(AU.track&&AU.track.key===key)return;bgmStop(.5);
@@ -919,9 +947,12 @@ function sting(){if(!auInit())return;const c=AU.ctx,t=c.currentTime+.03;iKick(AU
 let txTimer=null;
 function txType(text,dur){clearInterval(txTimer);let i=0;const n=text.length,step=Math.max(18,dur/n);
   txTimer=setInterval(()=>{const e=$('#txt');if(!e){clearInterval(txTimer);return}i++;e.textContent=text.slice(0,i);if(i>=n)clearInterval(txTimer)},step)}
+const MALE_RE=/InJoon|Hyunsu|BongJin|GookMin|Seoyeon-?Male|\bMale\b|남성/i;
 function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));
-  return vs.find(v=>/InJoon|Hyunsu|BongJin|GookMin|Male|남/i.test(v.name))||vs[0]||null}catch(e){return null}}
-try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}catch(e){}
+  return vs.find(v=>MALE_RE.test(v.name)&&/Natural|Online|Neural/i.test(v.name))||vs.find(v=>MALE_RE.test(v.name))||null}catch(e){return null}}
+function voiceLabel(){if(AVAIL['assets/voice-intro.mp3'])return '음성: 녹음 파일';const v=pickVoice();return v?'음성: '+v.name.replace(/Microsoft |Online |\(Natural\)| - .*/g,'').trim()+' (남성)':'음성: 남성 음성 없음 · Edge 권장'}
+function showVoice(){const e=$('#vstat');if(e)e.textContent=voiceLabel()}
+try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{speechSynthesis.getVoices();showVoice()}}catch(e){}
 function stopNarration(){clearInterval(txTimer);try{speechSynthesis.cancel()}catch(e){}if(AU.voice){AU.voice.pause();AU.voice=null}const b=$('.tx');if(b)b.classList.remove('speaking')}
 function narrate(){
   stopNarration();const box=$('.tx');if(box)box.classList.add('speaking');txType(NARR,14500);
@@ -933,7 +964,7 @@ function narrate(){
 function speak(done){
   let ss;try{ss=window.speechSynthesis}catch(e){}if(!ss){setTimeout(done,14500);return}
   ss.cancel();const u=new SpeechSynthesisUtterance(NARR_TTS);u.lang='ko-KR';const v=pickVoice();if(v)u.voice=v;
-  u.pitch=.45;u.rate=.88;u.volume=1;u.onend=done;u.onerror=done;ss.speak(u);
+  u.pitch=v?.7:.1;u.rate=.86;u.volume=1;u.onend=done;u.onerror=done;ss.speak(u);
 }
 function setSound(on){AU.on=on;try{localStorage.setItem('dsSound',on?'on':'off')}catch(e){}
   const b=$('#bsound');b.textContent=on?'소리: 켜짐':'소리: 꺼짐';b.classList.toggle('on',on);
@@ -1123,7 +1154,7 @@ $('#bprev').addEventListener('click',()=>jump(-1));
 $('#bnext').addEventListener('click',()=>jump(1));
 $('#bpause').addEventListener('click',togglePause);
 $('#bhome').addEventListener('click',goIdle);
-$('#bsound').addEventListener('click',()=>setSound(!AU.on));setSound(AU.on);
+$('#bsound').addEventListener('click',()=>setSound(!AU.on));setSound(AU.on);setTimeout(showVoice,800);
 $('#bfull').addEventListener('click',()=>{try{const p=wrap.requestFullscreen&&wrap.requestFullscreen();if(p&&p.catch)p.catch(()=>{})}catch(e){}});
 document.addEventListener('fullscreenchange',fit);
 document.addEventListener('keydown',e=>{
