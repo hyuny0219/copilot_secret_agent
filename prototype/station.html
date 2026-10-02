@@ -1,0 +1,862 @@
+<title>Declassify Station 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Nanum+Pen+Script&display=swap">
+<style>
+/* Layout: one 1600x900 kiosk canvas scaled to fit the viewport, review controls and flow notes beneath.
+   Dark agency HQ frame around light office work screens; one agent color per mission. Single committed dark look. */
+:root{
+  color-scheme: dark;
+  --hq:#0C0F13; --hq-2:#141920; --hq-3:#1C232C; --line:#2A333F; --mute:#8A96A5; --text:#E7EBF0;
+  --paper:#F4F2ED; --paper-2:#FFFFFF; --ink:#1D222A; --rule:#D8D4CA; --ink-mute:#687180;
+  --alert:#E5484D; --pen:#D11F35; --hit:#F2B53A; --agent:#5CC8F0;
+  --f-display:"Big Shoulders Stencil Display","Impact","Arial Narrow",sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --f-pen:"Nanum Pen Script","Comic Sans MS",cursive;
+}
+html,body{background:var(--hq);color:var(--text)}
+body{font-family:var(--f-body);padding-inline:16px;padding-block:20px 48px}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--agent);outline-offset:2px}
+
+/* ---------- review page ---------- */
+.page{max-width:1600px;margin-inline:auto;display:flex;flex-direction:column;gap:18px}
+.page-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.page-head h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;letter-spacing:.04em;margin:0;line-height:1}
+.page-head p{margin:.35rem 0 0;color:var(--mute);font-size:.92rem;max-width:62ch}
+.tag-proto{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;color:var(--hit);border:1px solid var(--hit);padding:3px 8px;border-radius:2px;white-space:nowrap}
+
+.stage-wrap{position:relative;width:100%;max-width:min(1600px, calc((100dvh - 190px) * 16 / 9));min-width:0;margin-inline:auto;aspect-ratio:16/9;border:1px solid var(--line);background:#000;overflow:hidden}
+.stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;transform:scale(var(--s,0.5));background:var(--hq);overflow:hidden;font-size:16px}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.controls .grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.btn{background:var(--hq-3);border:1px solid var(--line);padding:7px 12px;border-radius:3px;cursor:pointer;font-size:.86rem}
+.btn:hover{border-color:var(--mute)}
+.btn.m{border-left:4px solid var(--c)}
+.readout{font-family:var(--f-mono);font-size:.8rem;color:var(--mute)}
+
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.note{background:var(--hq-2);border:1px solid var(--line);border-top:3px solid var(--c);padding:14px 16px;min-width:0}
+.note h3{margin:0 0 4px;font-size:.95rem}
+.note .who{font-family:var(--f-mono);font-size:.72rem;color:var(--mute);letter-spacing:.08em}
+.note ol{margin:.6rem 0 0;padding-left:1.1rem;font-size:.85rem;color:#C9D0D9;display:flex;flex-direction:column;gap:3px}
+.kiosk{font-size:.84rem;color:var(--mute);border-top:1px solid var(--line);padding-top:12px;line-height:1.6}
+.kiosk b{color:var(--text);font-weight:500}
+
+/* ---------- stage chrome ---------- */
+.topbar{position:absolute;left:0;right:0;top:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:13px;letter-spacing:.14em;color:var(--mute);background:var(--hq)}
+.topbar .mid{color:var(--text)}
+.topbar .mid b{color:var(--ac,var(--agent));font-weight:600}
+.rec{color:var(--alert)}
+.rec::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--alert);margin-right:8px;animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.main{position:absolute;left:0;top:44px;width:1600px;height:800px}
+.prog{position:absolute;left:0;right:0;bottom:0;height:56px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:12px 28px;border-top:1px solid var(--line);background:var(--hq)}
+.seg{display:flex;flex-direction:column;gap:6px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:#566170}
+.seg i{display:block;height:4px;background:var(--hq-3);position:relative;overflow:hidden}
+.seg i::after{content:"";position:absolute;inset:0;width:0;background:var(--ac,var(--agent))}
+.seg.done{color:var(--mute)} .seg.done i::after{width:100%}
+.seg.active{color:var(--text)} .seg.active i::after{animation:fill var(--d,5s) linear forwards}
+@keyframes fill{to{width:100%}}
+.stage.idle .prog{opacity:.25}
+.stage.paused *, .stage.paused *::before, .stage.paused *::after{animation-play-state:paused!important}
+.pausemark{position:absolute;right:28px;top:60px;font-family:var(--f-mono);font-size:13px;letter-spacing:.2em;color:var(--hit);display:none;z-index:50}
+.stage.paused .pausemark{display:block}
+
+/* ---------- idle ---------- */
+.idle-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px}
+.eyebrow{font-family:var(--f-mono);font-size:14px;letter-spacing:.32em;color:var(--mute)}
+.idle-title{font-family:var(--f-display);font-weight:800;font-size:92px;letter-spacing:.04em;line-height:.9;margin:0;text-align:center}
+.idle-title span{display:block;font-family:var(--f-body);font-weight:500;font-size:26px;letter-spacing:0;color:var(--mute);margin-top:14px}
+.deck{display:flex;gap:44px}
+.mcard{--ac:#888;width:300px;height:400px;position:relative;background:#B79F78;color:#2A2118;border-radius:6px;padding:26px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px rgba(0,0,0,.55);cursor:pointer;transition:transform .35s ease, opacity .35s ease;border:0;text-align:left}
+.mcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--ac);border-radius:6px 0 0 6px}
+.mcard:hover{transform:translateY(-12px) rotate(-1deg)}
+.mcard .no{font-family:var(--f-display);font-weight:800;font-size:64px;line-height:.85;letter-spacing:.02em}
+.mcard .dept{font-weight:700;font-size:20px}
+.mcard .rl{height:14px;background:#2A2118;width:var(--w);opacity:.85}
+.mcard .ts{position:absolute;right:20px;bottom:64px;font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:.06em;color:#B4142B;border:4px solid #B4142B;padding:2px 12px;transform:rotate(-9deg);opacity:.85}
+.mcard .key{margin-top:auto;font-family:var(--f-mono);font-size:13px;letter-spacing:.14em}
+.deck.picking .mcard{opacity:.15;transform:scale(.94)}
+.deck.picking .mcard.picked{opacity:1;transform:translateY(-24px) scale(1.06)}
+.idle-hint{font-size:20px;color:var(--mute)}
+.idle-hint b{color:var(--text);font-family:var(--f-mono);font-weight:600;border:1px solid var(--line);padding:2px 10px;margin:0 4px}
+
+/* ---------- briefing ---------- */
+.brief{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:70px}
+.bcard{width:560px;height:660px;background:#C2AB83;color:#241C14;border-radius:8px;position:relative;padding:44px 48px 40px 60px;display:flex;flex-direction:column;gap:18px;box-shadow:0 30px 60px rgba(0,0,0,.6);animation:flipIn .9s cubic-bezier(.2,.8,.2,1) both}
+.bcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:16px;background:var(--ac);border-radius:8px 0 0 8px}
+@keyframes flipIn{from{transform:perspective(1400px) rotateY(80deg) scale(.8);opacity:0}}
+.bcard .row{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:14px;letter-spacing:.14em}
+.bcard .no{font-family:var(--f-display);font-weight:800;font-size:96px;line-height:.8}
+.bcard .dept{font-size:26px;font-weight:700}
+.bcard .dir{font-size:27px;line-height:1.55;font-weight:500;min-height:210px}
+.bcard .meta{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;font-size:16px;border-top:2px solid rgba(36,28,20,.3);padding-top:16px}
+.bcard .meta small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;opacity:.7}
+.stampx{position:absolute;right:40px;bottom:130px;font-family:var(--f-display);font-weight:800;font-size:58px;letter-spacing:.08em;color:#B4142B;border:6px solid #B4142B;padding:0 18px;transform:rotate(-12deg) scale(2.4);opacity:0}
+.stampx.on{animation:slam .35s cubic-bezier(.3,1.6,.6,1) forwards}
+@keyframes slam{to{transform:rotate(-12deg) scale(1);opacity:.9}}
+.bside{width:420px;display:flex;flex-direction:column;gap:22px}
+.bside .eyebrow{color:var(--ac)}
+.bside h2{font-family:var(--f-display);font-weight:800;font-size:64px;letter-spacing:.03em;margin:0;line-height:.95}
+.bside p{font-size:21px;line-height:1.6;color:#C3CAD3;margin:0}
+.flow5{display:flex;flex-direction:column;gap:8px;font-family:var(--f-mono);font-size:15px;letter-spacing:.06em;color:var(--mute)}
+.flow5 span{display:flex;gap:12px;align-items:center}
+.flow5 span::before{content:"";width:22px;height:2px;background:var(--ac)}
+
+/* ---------- workspace window ---------- */
+.win{position:absolute;left:40px;top:24px;width:1520px;height:752px;background:var(--paper);color:var(--ink);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:width .9s cubic-bezier(.6,0,.2,1);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.win.narrow{width:1050px}
+.win-bar{height:40px;flex:none;display:flex;align-items:center;gap:14px;padding:0 16px;background:#E3E0D8;border-bottom:1px solid var(--rule);font-size:14px;color:#3B424C}
+.win-bar .dots{display:flex;gap:7px}
+.win-bar .dots i{width:12px;height:12px;border-radius:50%;background:#C8C3B8}
+.win-bar .wt{font-weight:500}
+.win-bar .app{margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--ink-mute)}
+.timer{margin-left:auto;font-family:var(--f-mono);font-weight:600;font-size:20px;color:#fff;background:var(--alert);padding:2px 12px;border-radius:3px;letter-spacing:.06em}
+.timer small{font-family:var(--f-body);font-weight:500;font-size:12px;margin-right:8px;opacity:.9;letter-spacing:0}
+.timer.ok{background:#1F8A5B}
+.win-body{flex:1;position:relative;overflow:hidden;min-height:0}
+.scan{position:absolute;left:0;right:0;height:120px;top:-130px;background:linear-gradient(180deg,transparent, rgba(92,200,240,.22) 70%, rgba(92,200,240,.75) 100%);pointer-events:none;z-index:20}
+.scan.go{animation:scan 1.4s ease-in-out}
+@keyframes scan{from{top:-130px}to{top:100%}}
+.sa-btn{position:absolute;right:24px;bottom:22px;z-index:30;display:flex;align-items:center;gap:10px;background:var(--hq);color:#fff;border:2px solid var(--ac);border-radius:40px;padding:12px 22px 12px 14px;font-weight:700;font-size:19px;opacity:0;transform:translateY(20px);transition:all .5s;cursor:default}
+.sa-btn i{width:30px;height:30px;border-radius:50%;background:var(--ac);display:grid;place-items:center;font-style:normal;color:var(--hq);font-size:22px;font-weight:700;line-height:1}
+.sa-btn.on{opacity:1;transform:none;animation:pulse 1.6s ease-in-out infinite}
+.sa-btn.press{transform:scale(.92);animation:none;background:var(--ac);color:var(--hq)}
+.sa-btn.gone{opacity:0;pointer-events:none;animation:none}
+@keyframes pulse{50%{box-shadow:0 0 0 14px rgba(255,255,255,0)}0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ac) 70%,transparent)}}
+
+.hit{outline:3px solid var(--hit)!important;outline-offset:3px;box-shadow:0 0 0 9px rgba(242,181,58,.22)!important;transition:outline-color .3s}
+.hit-tag{position:absolute;z-index:25;background:var(--hit);color:#231A05;font-family:var(--f-mono);font-size:12px;font-weight:600;padding:3px 8px;letter-spacing:.04em;white-space:nowrap;animation:pop .3s ease-out both}
+@keyframes pop{from{transform:translateY(6px);opacity:0}}
+.penmark{position:absolute;z-index:26;pointer-events:none;overflow:visible}
+.penmark ellipse{fill:none;stroke:var(--pen);stroke-width:3.5;stroke-dasharray:2000;stroke-dashoffset:2000;animation:draw 1s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pennote{position:absolute;z-index:27;font-family:var(--f-pen);font-size:30px;line-height:1;color:var(--pen);white-space:nowrap;transform:rotate(-3deg);animation:pop .4s .6s ease-out both}
+.wstamp{position:absolute;z-index:28;right:40px;bottom:34px;font-family:var(--f-display);font-weight:800;font-size:40px;letter-spacing:.06em;color:var(--pen);border:5px solid var(--pen);padding:0 16px;background:rgba(255,255,255,.6);transform:rotate(-8deg) scale(2.2);opacity:0}
+.wstamp.on{animation:slam2 .35s cubic-bezier(.3,1.6,.6,1) forwards}
+@keyframes slam2{to{transform:rotate(-8deg) scale(1);opacity:.95}}
+
+.cursor{position:absolute;z-index:40;width:30px;height:30px;left:700px;top:420px;transition:left 1.1s cubic-bezier(.5,0,.2,1),top 1.1s cubic-bezier(.5,0,.2,1);pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.cursor.click::after{content:"";position:absolute;left:-14px;top:-14px;width:30px;height:30px;border-radius:50%;border:3px solid var(--ac);animation:ripple .5s ease-out forwards}
+@keyframes ripple{to{transform:scale(2.4);opacity:0}}
+
+.pain{position:absolute;z-index:35;left:70px;bottom:46px;width:440px;background:var(--hq);color:var(--text);border-left:6px solid var(--alert);padding:20px 24px;box-shadow:0 16px 40px rgba(0,0,0,.5);opacity:0;transform:translateX(-30px);transition:all .6s}
+.pain.on{opacity:1;transform:none}
+.pain .t{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;color:var(--alert)}
+.pain h3{margin:6px 0 10px;font-size:30px;line-height:1.2}
+.pain ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:17px;color:#C3CAD3}
+.pain li::before{content:"— ";color:var(--alert)}
+
+/* ---------- agent panel ---------- */
+.panel{position:absolute;left:1110px;top:24px;width:450px;height:752px;background:var(--hq-2);border:1px solid var(--line);border-top:4px solid var(--ac);border-radius:8px;display:flex;flex-direction:column;transform:translateX(560px);opacity:0;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .5s}
+.panel.open{transform:none;opacity:1}
+.p-head{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.p-emb{width:42px;height:42px;border-radius:50%;border:2px solid var(--ac);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:20px;color:var(--ac)}
+.p-head small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;color:var(--mute)}
+.p-head b{font-family:var(--f-display);font-weight:800;font-size:26px;letter-spacing:.06em}
+.p-sec{margin-left:auto;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--hit);border:1px solid var(--hit);padding:3px 7px}
+.p-body{flex:1;min-height:0;overflow:hidden;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.p-msg{font-size:16px;line-height:1.55;color:#C9D0D9;opacity:0;transition:opacity .4s}
+.p-msg.on{opacity:1}
+.p-files{display:flex;flex-direction:column;gap:6px}
+.chip{display:flex;align-items:center;gap:10px;background:var(--hq-3);border:1px solid var(--line);padding:7px 12px;font-size:14px;opacity:0;transform:translateY(8px);transition:all .35s}
+.chip.on{opacity:1;transform:none}
+.chip b{font-family:var(--f-mono);font-size:12px;color:#231A05;background:var(--hit);padding:1px 6px}
+.chip i{margin-left:auto;font-style:normal;font-family:var(--f-mono);font-size:12px;color:var(--mute)}
+.p-prompt{background:#0A0D11;border:1px solid var(--line);padding:12px 14px;opacity:0;transition:opacity .3s}
+.p-prompt.on{opacity:1}
+.p-prompt small{font-family:var(--f-mono);font-size:11px;letter-spacing:.18em;color:var(--agent)}
+.p-prompt p{margin:6px 0 0;font-size:15px;line-height:1.6;color:var(--text);min-height:3em}
+.panel.compact .p-prompt p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-height:0}
+.panel.compact .p-msg{display:none}
+.panel.compact .p-files{flex-direction:row;flex-wrap:wrap}
+.panel.compact .chip{padding:5px 8px;font-size:12px}
+.panel.compact .chip span{display:none}
+.panel.compact .chip i{margin-left:0}
+.rd{background:#E7EBF0;color:transparent;box-decoration-break:clone;-webkit-box-decoration-break:clone;border-radius:1px}
+mark{background:rgba(92,200,240,.22);color:var(--agent);padding:0 2px}
+.p-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.st{display:grid;grid-template-columns:22px 1fr;gap:4px 12px;align-items:start;animation:pop .35s ease-out both}
+.st .ic{width:20px;height:20px;border-radius:50%;border:2px solid var(--agent);margin-top:2px}
+.st.run .ic{border-right-color:transparent;animation:spin .8s linear infinite}
+.st.ok .ic{background:var(--agent);border-color:var(--agent);position:relative}
+.st.ok .ic::after{content:"";position:absolute;left:5px;top:2px;width:5px;height:9px;border:solid var(--hq);border-width:0 2px 2px 0;transform:rotate(45deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.st b{font-size:15px;font-weight:500}
+.st small{grid-column:2;font-size:13px;color:var(--mute);line-height:1.45}
+.st em{grid-column:2;font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--hit)}
+.p-status{margin-top:auto;font-size:14px;color:var(--agent);font-family:var(--f-mono);letter-spacing:.04em;min-height:20px}
+.p-status.human{color:var(--pen);font-family:var(--f-body);font-size:15px;font-weight:500}
+.p-input{display:flex;align-items:center;gap:10px;margin:0 16px 16px;border:1px solid var(--line);padding:10px 12px;color:#5B6676;font-size:14px}
+.p-input .send{margin-left:auto;background:var(--hq-3);color:var(--mute);padding:4px 12px;font-size:13px;font-weight:500}
+.p-input .send.press{background:var(--ac);color:var(--hq)}
+
+/* ---------- mission 1 workspace ---------- */
+.tabs{display:flex;gap:2px;padding:10px 14px 0;background:#ECE9E2;border-bottom:1px solid var(--rule)}
+.tab{font-size:13px;padding:7px 12px;background:#DDD9CF;color:#4A515C;border-radius:4px 4px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tab.on{background:var(--paper);color:var(--ink);font-weight:500}
+.m1-grid{display:grid;grid-template-columns:200px minmax(0,1fr) 300px;gap:14px;padding:14px;height:calc(100% - 42px)}
+.win.narrow .m1-grid{grid-template-columns:150px minmax(0,1fr) 210px}
+.slides{display:flex;flex-direction:column;gap:10px;min-width:0}
+.slide{background:#fff;border:1px solid var(--rule);padding:10px;font-size:12px;display:flex;flex-direction:column;gap:5px;aspect-ratio:16/10;min-width:0;overflow:hidden}
+.slide small{font-family:var(--f-mono);font-size:10px;color:var(--ink-mute);letter-spacing:.1em}
+.slide b{font-size:14px}
+.slide .big{font-size:20px;color:#1B4F9C}
+.bars{display:flex;flex-direction:column;gap:4px}
+.bars i{display:block;height:5px;background:#E3E0D8;width:var(--w,80%)}
+.sheet{background:#fff;border:1px solid var(--rule);overflow:hidden;min-width:0}
+.sheet table{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums}
+.sheet th,.sheet td{border:1px solid #E6E2DA;padding:4px 7px;text-align:right;white-space:nowrap}
+.sheet th{background:#F1EEE7;font-weight:600;color:#4A515C}
+.sheet td:first-child,.sheet th:first-child{text-align:left;font-family:var(--f-body)}
+.sheet .neg{color:#B42318}
+.sheet .cap{font-family:var(--f-body);font-size:12px;color:var(--ink-mute);padding:6px 8px;border-bottom:1px solid var(--rule)}
+.report{background:#fff;border:1px solid var(--rule);padding:14px;font-size:12px;line-height:1.6;color:#4A515C;display:flex;flex-direction:column;gap:6px;min-width:0;overflow:hidden}
+.report small{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;color:var(--ink-mute)}
+.report .ln{height:6px;background:#E8E5DE;width:var(--w,100%)}
+.report .q{color:var(--ink);font-weight:500;border-left:3px solid #C9C3B5;padding-left:8px}
+.sticky{position:absolute;right:300px;bottom:30px;background:#FCE68A;color:#4A3B00;font-family:var(--f-pen);font-size:30px;padding:10px 18px;transform:rotate(-4deg);box-shadow:0 6px 14px rgba(0,0,0,.18)}
+.win.narrow .sticky{display:none}
+
+/* ---------- document (results) ---------- */
+.doc{position:absolute;inset:0;overflow:hidden;background:#fff;padding:26px 40px 20px;display:flex;flex-direction:column;gap:12px;font-size:15px;line-height:1.55}
+.doc .dh small{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--ink-mute)}
+.doc h2{margin:2px 0 0;font-size:25px;line-height:1.25}
+.doc h4{margin:0 0 4px;font-size:13px;letter-spacing:.06em;color:#1B4F9C}
+.doc p{margin:0}
+.doc sup{font-family:var(--f-mono);font-size:10px;color:#9A5B00;background:#FFF4D6;padding:0 4px;margin-left:3px;vertical-align:2px}
+.doc em{font-style:normal;color:#B42318;font-size:13px}
+.doc ol{margin:0;padding-left:1.2rem}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cols.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cols section, .doc > section{border:1px solid #ECE8E0;padding:10px 12px;min-width:0}
+.verdict{background:#0F2F5C;color:#fff;padding:10px 16px;display:flex;gap:14px;align-items:baseline;font-size:15px}
+.verdict b{font-size:19px}
+.kv{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.kv td{padding:2px 0;border-bottom:1px dashed #E6E2DA}
+.kv td:last-child{text-align:right;font-weight:500}
+[data-g]{opacity:0;transform:translateY(8px);transition:opacity .45s, transform .45s}
+[data-g].on, .all-on [data-g]{opacity:1;transform:none}
+.bench{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+.bench th,.bench td{padding:7px 10px;border-bottom:1px solid #ECE8E0;text-align:right}
+.bench th{font-size:12px;letter-spacing:.04em;color:var(--ink-mute);font-weight:500;background:#F7F5F0}
+.bench td:first-child,.bench th:first-child{text-align:left}
+.bench .up{color:#1F7A4D} .bench .dn{color:#1F7A4D}
+.src{font-size:13px;color:var(--ink-mute);display:flex;flex-direction:column;gap:2px}
+
+/* ---------- mission 2 form ---------- */
+.form{position:absolute;inset:0;background:#fff;padding:20px 34px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.form-title{font-size:26px;font-weight:700;text-align:center;letter-spacing:.4em;padding-bottom:6px;border-bottom:3px double var(--ink)}
+.f{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed}
+.f th,.f td{border:1px solid #BDB7AA;padding:6px 10px;height:34px;text-align:left;vertical-align:middle}
+.f th{background:#F1EEE7;width:110px;font-weight:500;color:#3B424C}
+.f.grid th{width:auto;text-align:center}
+.f.grid td.n{text-align:right;font-variant-numeric:tabular-nums}
+.f .fill{color:#123E7C;font-weight:500}
+.f .fill:empty::after{content:"";display:inline-block;width:1px}
+.f tr.sum td{font-weight:700;background:#F7F5F0}
+.f-sec{font-size:14px;font-weight:700;margin-top:4px;display:flex;justify-content:space-between;align-items:baseline}
+.f-sec small{font-weight:400;color:var(--ink-mute);font-size:12px}
+.approve{display:flex;justify-content:flex-end;gap:0;margin-top:4px}
+.approve div{width:90px;border:1px solid #BDB7AA;font-size:12px;text-align:center;display:flex;flex-direction:column}
+.approve div span{background:#F1EEE7;padding:3px}
+.approve div b{height:38px;display:grid;place-items:center;font-weight:500;color:#123E7C;font-size:13px}
+.toast{position:absolute;right:22px;top:16px;z-index:5;background:var(--hq);color:var(--text);padding:10px 14px;border-left:4px solid var(--alert);font-size:13px;width:300px;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.toast small{display:block;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--alert)}
+.win.narrow .toast{display:none}
+
+/* ---------- mission 3 site ---------- */
+.browser{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff}
+.url{height:38px;flex:none;display:flex;align-items:center;gap:10px;padding:0 16px;background:#EFEDE7;border-bottom:1px solid var(--rule);font-family:var(--f-mono);font-size:13px;color:#4A515C}
+.url span{background:#fff;border:1px solid var(--rule);border-radius:20px;padding:4px 14px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.site{flex:1;min-height:0;overflow:hidden;font-family:Georgia,"Times New Roman",serif;color:#13233A}
+.s-nav{display:flex;align-items:center;gap:28px;padding:14px 30px;border-bottom:1px solid #E3E6EA;font-family:var(--f-body);font-size:14px}
+.s-logo{font-family:Georgia,serif;font-size:22px;letter-spacing:.08em;color:#0B2A55;line-height:1}
+.s-logo span{display:block;font-family:var(--f-body);font-size:9px;letter-spacing:.3em;color:#6A7A90;margin-top:3px}
+.s-nav nav{display:flex;gap:22px;color:#3A4A60;flex-wrap:wrap}
+.s-nav u{color:#0B2A55;text-decoration-thickness:2px;text-underline-offset:6px}
+.s-hero{background:#0B2A55;color:#fff;padding:26px 30px}
+.s-hero h3{margin:0;font-weight:400;font-size:34px}
+.s-hero p{margin:6px 0 0;font-family:var(--f-body);font-size:14px;color:#B9C6D8}
+.s-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:18px 30px}
+.s-tiles a{display:flex;flex-direction:column;gap:4px;border:1px solid #DCE1E7;padding:14px;font-size:16px;color:#0B2A55;min-width:0}
+.s-tiles a small{font-family:var(--f-body);font-size:12px;color:#6A7A90}
+.s-news{margin:0 30px;border-top:1px solid #DCE1E7;padding-top:10px;font-family:var(--f-body);font-size:13px;color:#3A4A60;display:flex;flex-direction:column;gap:5px}
+.s-news b{font-size:14px;color:#0B2A55}
+.win.narrow .s-tiles{grid-template-columns:repeat(2,minmax(0,1fr));padding:14px 22px;gap:8px}
+.win.narrow .s-tiles a{padding:9px 12px;font-size:14px}
+.win.narrow .s-news{display:none}
+
+/* ---------- case file ---------- */
+.case{position:absolute;inset:0;padding:26px 40px 22px;display:grid;grid-template-rows:auto auto auto;align-content:center;gap:26px}
+.case-head{display:flex;align-items:flex-end;gap:24px;border-bottom:1px solid var(--line);padding-bottom:16px}
+.case-head .no{font-family:var(--f-display);font-weight:800;font-size:72px;line-height:.8;color:var(--ac)}
+.case-head h2{margin:0;font-size:34px;line-height:1.2}
+.case-head .sub{font-size:17px;color:var(--mute);margin-top:4px}
+.declass{margin-left:auto;font-family:var(--f-display);font-weight:800;font-size:38px;letter-spacing:.08em;color:var(--alert);border:5px solid var(--alert);padding:0 16px;transform:rotate(-6deg);opacity:0}
+.declass.on{animation:slam3 .35s cubic-bezier(.3,1.6,.6,1) forwards}
+@keyframes slam3{from{transform:rotate(-6deg) scale(2.2)}to{transform:rotate(-6deg) scale(1);opacity:.95}}
+.strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.sbox{background:var(--hq-2);border:1px solid var(--line);border-top:4px solid var(--k);padding:14px 16px;display:flex;flex-direction:column;gap:6px;opacity:0;transform:translateY(14px);transition:all .45s;position:relative;min-width:0}
+.sbox.on{opacity:1;transform:none}
+.sbox small{font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;color:var(--k)}
+.sbox p{margin:0;font-size:19px;line-height:1.45}
+.sbox:not(:last-child)::after{content:"";position:absolute;right:-12px;top:50%;width:12px;height:2px;background:var(--line)}
+.case-low{display:grid;grid-template-columns:1.05fr 1.2fr .9fr;gap:20px;min-height:0;align-items:stretch}
+.cbox{background:var(--hq-2);border:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0;overflow:hidden}
+.cbox h4{margin:0;font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--mute);font-weight:400}
+.bar{display:grid;grid-template-columns:70px 1fr 100px;align-items:center;gap:12px;font-size:15px}
+.bar span:last-child{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:20px;font-weight:600}
+.bar i{display:block;height:28px;background:var(--hq-3);position:relative}
+.bar i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--bc);transition:width 1.4s cubic-bezier(.3,0,.2,1)}
+.cbox.go .bar i::after{width:var(--w)}
+.big-effect{font-size:30px;font-weight:700;line-height:1.25}
+.big-effect small{display:block;font-size:15px;font-weight:400;color:var(--mute);margin-top:4px}
+.steal{font-size:18px;line-height:1.6;background:#0A0D11;border:1px dashed var(--ac);padding:14px 16px;color:#DDE3EA}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{border:1px solid var(--line);padding:5px 12px;font-size:15px}
+.quote{font-size:19px;line-height:1.5;border-left:3px solid var(--ac);padding-left:14px;margin-top:auto}
+.quote small{display:block;font-size:13px;color:var(--mute);margin-top:4px}
+.tools{font-size:14px;color:var(--mute);line-height:1.6}
+.tools b{color:var(--text);font-weight:500}
+.ex{font-family:var(--f-mono);font-size:11px;color:#5D6876;letter-spacing:.06em}
+
+/* ---------- outro ---------- */
+.outro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center}
+.outro h2{font-family:var(--f-display);font-weight:800;font-size:120px;letter-spacing:.05em;margin:0;line-height:.9;color:var(--ac)}
+.outro p{font-size:28px;margin:0;color:#C9D0D9}
+.outro .cd{font-family:var(--f-mono);font-size:16px;color:var(--mute);letter-spacing:.14em}
+
+@media (prefers-reduced-motion: reduce){
+  .stage *{transition-duration:.01s!important;animation-duration:.01s!important}
+}
+@media (max-width:640px){
+  .page-head h1{font-size:1.6rem}
+  .btn{padding:6px 9px;font-size:.8rem}
+}
+</style>
+
+<div class="page">
+  <header class="page-head">
+    <div>
+      <h1>DECLASSIFY STATION</h1>
+      <p>AX Day 2026 부스 프로그램 시안입니다. 미션 카드 1장을 뽑으면 시작 화면부터 Secret Agent 호출, 처리 과정, 결과물, 사람 검토, 실제 사례 공개까지 약 85초 동안 자동으로 재생됩니다.</p>
+    </div>
+    <span class="tag-proto">PROTOTYPE · 예시 데이터</span>
+  </header>
+
+  <div class="stage-wrap" id="wrap">
+    <div class="stage idle" id="stage">
+      <div class="topbar"><span>AXIA // DECLASSIFY STATION 01</span><span class="mid" id="tmid">STANDBY</span><span><span class="rec">REC</span>&nbsp;&nbsp;<span id="clock">--:--:--</span></span></div>
+      <div class="pausemark">PAUSED</div>
+      <div class="main" id="main"></div>
+      <div class="prog" id="prog"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="grp">
+      <button class="btn m" style="--c:#D9A62E" data-m="0" id="q1">미션 01 재생</button>
+      <button class="btn m" style="--c:#4C8DFF" data-m="1" id="q2">미션 02 재생</button>
+      <button class="btn m" style="--c:#E5484D" data-m="2" id="q3">미션 03 재생</button>
+    </div>
+    <div class="grp">
+      <button class="btn" id="bprev">이전 단계</button>
+      <button class="btn" id="bpause">일시정지</button>
+      <button class="btn" id="bnext">다음 단계</button>
+      <button class="btn" id="bhome">처음 화면</button>
+      <button class="btn" id="bfull">전체 화면</button>
+      <span class="readout" id="readout">대기 화면</span>
+    </div>
+  </div>
+
+  <section class="notes" id="notes"></section>
+  <p class="kiosk"><b>현장 키오스크 조작:</b> 방문객은 미션 카드 버튼 3개(또는 카드 RFID 태그) 중 하나만 누르면 끝까지 자동 재생됩니다. 위의 이전·다음·일시정지 버튼은 시안 검토용이며 키보드 <b>1·2·3</b>(미션 선택), <b>Space</b>(무작위 미션 / 일시정지), <b>← →</b>(단계 이동)로도 조작할 수 있습니다. 화면 속 회사명, 인물, 수치는 모두 가상 데이터이며 실제 사례가 확정되면 교체합니다.</p>
+</div>
+
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ===================== MISSIONS ===================== */
+const M1_SHEET=[
+  ['매출액','820','1,540','4,340','812','968','1,174','1,386',''],
+  ['매출원가','390','702','1,780','341','407','482','550',''],
+  ['매출총이익','430','838','2,560','471','561','692','836',''],
+  ['판매관리비','2,530','4,288','6,740','1,512','1,640','1,738','1,850',''],
+  ['영업이익','-2,100','-3,450','-4,180','-1,041','-1,079','-1,046','-1,014','op'],
+  ['당기순이익','-2,180','-3,520','-4,310','-1,072','-1,110','-1,079','-1,049',''],
+  ['현금및현금성자산','3,200','9,850','5,740','8,620','7,410','6,560','5,740','cash'],
+  ['총부채','1,120','1,860','2,410','1,980','2,120','2,260','2,410',''],
+  ['월평균 번레이트','210','330','410','394','402','418','424','burn'],
+  ['고객 기관 수','38','104','212','131','158','186','212',''],
+  ['ARR','610','1,620','5,180','1,980','2,950','4,060','5,180',''],
+];
+function m1Blank(){
+  const rows=M1_SHEET.map(r=>`<tr${r[8]?` id="m1-${r[8]}"`:''}>${r.slice(0,8).map((v,i)=>`<td${v.startsWith('-')?' class="neg"':''}>${v}</td>`).join('')}</tr>`).join('');
+  return `
+  <div class="tabs"><span class="tab on">IR_Deck_v7.pdf · 47p</span><span class="tab">재무제표_2023-2025.xlsx · 6시트</span><span class="tab">시장조사_시니어헬스케어.pdf · 82p</span><span class="tab">텀시트_초안.docx</span></div>
+  <div class="m1-grid">
+    <div class="slides" id="m1-ir">
+      <div class="slide"><small>IR 06 · BUSINESS</small><b>CareLink</b><span>시니어 건강데이터 플랫폼</span><div class="bars"><i style="--w:90%"></i><i style="--w:70%"></i></div></div>
+      <div class="slide" id="m1-tam"><small>IR 11 · MARKET</small><b class="big">TAM ₩12조</b><div class="bars"><i style="--w:60%"></i><i style="--w:85%"></i></div></div>
+      <div class="slide"><small>IR 15 · TRACTION</small><b>요양기관 212곳</b><div class="bars"><i style="--w:75%"></i><i style="--w:50%"></i></div></div>
+    </div>
+    <div class="sheet" id="m1-sheet">
+      <div class="cap">시트2 · 요약손익 및 현금흐름 (단위: 백만원)</div>
+      <table><tr><th>계정</th><th>2023</th><th>2024</th><th>2025</th><th>25.Q1</th><th>25.Q2</th><th>25.Q3</th><th>25.Q4</th></tr>${rows}</table>
+    </div>
+    <div class="report" id="m1-mkt">
+      <small>시장조사 리포트 · p.23</small>
+      <i class="ln" style="--w:95%"></i><i class="ln" style="--w:88%"></i><i class="ln" style="--w:92%"></i>
+      <p class="q">국내 시니어 헬스케어 데이터 시장은 2025년 8.4조 원 규모로 추정되며 연평균 14% 성장이 예상된다.</p>
+      <i class="ln" style="--w:90%"></i><i class="ln" style="--w:70%"></i><i class="ln" style="--w:94%"></i><i class="ln" style="--w:80%"></i>
+      <p class="q">요양기관의 데이터 솔루션 도입률은 23% 수준이다.</p>
+      <i class="ln" style="--w:86%"></i><i class="ln" style="--w:91%"></i><i class="ln" style="--w:60%"></i>
+    </div>
+  </div>
+  <div class="sticky">투심위 D-5! 1차 검토 메모 필요</div>`;
+}
+function m1Result(){
+  return `<div class="doc">
+    <div class="dh" data-g><small>투자운영파트 · 1차 투자검토 메모 · 초안 v1 · Word</small><h2>CareLink (Series A) 1차 투자검토</h2></div>
+    <div class="verdict" data-g id="r1-verdict"><span>1차 판단</span><b>2차 심사 진행 권고 (조건부)</b></div>
+    <div class="cols">
+      <section data-g><h4>사업 요약</h4><p>시니어 건강데이터 수집·분석 SaaS. 요양기관 212곳 이용<sup>IR p.6</sup></p></section>
+      <section data-g id="r1-mkt"><h4>시장 규모</h4><p>TAM 8.4조 원<sup>리포트 p.23</sup></p><em>IR 제시 12조와 차이, 산식 확인 필요<sup>IR p.11</sup></em></section>
+      <section data-g><h4>재무 핵심<sup>재무제표 시트2</sup></h4><table class="kv"><tr><td>매출 (2025)</td><td>43.4억 · +182%</td></tr><tr><td>영업손실</td><td>-41.8억</td></tr><tr><td>월 번레이트</td><td>4.1억</td></tr><tr><td>런웨이</td><td>14개월</td></tr></table></section>
+    </div>
+    <div class="cols two">
+      <section data-g><h4>투자 포인트</h4><ol><li>고객 기관 이탈률 3% 미만<sup>IR p.15</sup></li><li>보험사 연계 B2B2C 확장성</li><li>의료데이터 보안 인증 보유<sup>IR p.18</sup></li></ol></section>
+      <section data-g id="r1-risk"><h4>리스크</h4><ol><li>TAM 과대 추정 가능성</li><li>런웨이 14개월, 후속 투자 의존</li><li>개인정보 관련 규제 변화</li></ol></section>
+    </div>
+    <section data-g><h4>추가 확인 질문</h4><p>① TAM 산식 근거 ② 2026 매출 가이던스 ③ 보험사 PoC 계약 현황 ④ 핵심 인력 지분 구조 ⑤ 후속 라운드 계획</p></section>
+  </div>`;
+}
+
+function formHTML(filled){
+  const F=(v)=>`<span class="fill" data-g data-v="${esc(v)}">${filled?esc(v):''}</span>`;
+  const plan=[['10.19 (월)','인천 → 런던','출국 · 히드로 도착 후 숙소 이동'],['10.20 (화)','런던 시티','재보험 파트너사 A · 2027 갱신 조건 협의'],['10.21 (수)','런던 시티','브로커 B 미팅 · 시장 동향 세션'],['10.22 (목)','런던 시티','언더라이팅 가이드라인 공유 워크숍'],['10.23 (금)','런던 → 인천','귀국']];
+  const cost=[['항공료','인천-런던 왕복 · 일반석','1,850,000'],['숙박비','4박 × £220 (규정 한도 £230)','1,628,000'],['일비','5일 × 130,000','650,000'],['현지 교통비','공항철도 · 시내 교통','200,000']];
+  return `<div class="form">
+    <div class="form-title">해외출장 품의서</div>
+    <table class="f">
+      <tr><th>기안자</th><td>${F('김○○ 책임 · 글로벌U/W기획')}</td><th>기안일</th><td>${F('2026.10.02')}</td></tr>
+      <tr id="f-where"><th>출장지</th><td>${F('영국 런던')}</td><th>출장기간</th><td>${F('2026.10.19 (월) ~ 10.23 (금) · 4박 5일')}</td></tr>
+      <tr id="f-purpose"><th>출장목적</th><td colspan="3">${F('런던 재보험 파트너사와 2027년 갱신 조건 협의 및 언더라이팅 가이드라인 공유')}</td></tr>
+    </table>
+    <div class="f-sec">세부 일정</div>
+    <table class="f grid" id="f-plan"><tr><th style="width:120px">일자</th><th style="width:150px">장소</th><th>내용</th></tr>
+      ${plan.map(r=>`<tr><td>${F(r[0])}</td><td>${F(r[1])}</td><td>${F(r[2])}</td></tr>`).join('')}
+    </table>
+    <div class="f-sec">경비 내역 <small>해외출장 규정 제12조 적용 · 환율 £1 = 1,850원</small></div>
+    <table class="f grid" id="f-cost"><tr><th style="width:140px">항목</th><th>산출 근거</th><th style="width:150px">금액 (원)</th></tr>
+      ${cost.map(r=>`<tr><td>${F(r[0])}</td><td>${F(r[1])}</td><td class="n">${F(r[2])}</td></tr>`).join('')}
+      <tr class="sum"><td>합계</td><td></td><td class="n">${F('4,328,000')}</td></tr>
+    </table>
+    <div class="approve"><div><span>기안</span><b>${filled?'김○○':''}</b></div><div><span>파트장</span><b></b></div><div><span>팀장</span><b></b></div><div><span>본부장</span><b></b></div></div>
+  </div>`;
+}
+function m2Blank(){return formHTML(false)+`<div class="toast"><small>NEW MAIL · 본부장</small>[긴급] 런던 출장 요청 · 다음 주 월요일 출국</div>`}
+function m2Result(){return formHTML(false)}
+
+function m3Blank(){
+  return `<div class="browser">
+    <div class="url">◀ ▶ ↻ <span>https://www.oo-global.example/investors</span></div>
+    <div class="site">
+      <div class="s-nav"><b class="s-logo">OO GLOBAL<span>INSURANCE GROUP</span></b><nav><span>About us</span><span>Products</span><u>Investors</u><span>Newsroom</span><span>Sustainability</span><span>Careers</span></nav></div>
+      <div class="s-hero"><h3>Investor Relations</h3><p>Results, reports and presentations for shareholders and analysts.</p></div>
+      <div class="s-tiles">
+        <a id="t-ar">Annual Report 2025<small>PDF · 312 pages</small></a>
+        <a id="t-h1">H1 2026 Results<small>Presentation · 64 pages</small></a>
+        <a id="t-fs">Financial Supplement<small>XLSX · 14 sheets</small></a>
+        <a id="t-sfcr">Solvency &amp; Financial Condition Report<small>PDF · 180 pages</small></a>
+        <a>Webcast replay<small>Video · 82 min</small></a>
+        <a>Credit ratings<small>4 agencies</small></a>
+        <a>Shareholder letter<small>PDF · 12 pages</small></a>
+        <a>Dividend history<small>Table</small></a>
+      </div>
+      <div class="s-news" id="t-news"><b>Latest news</b><span>12 Aug 2026 · OO Global reports H1 2026 results</span><span>28 Jul 2026 · Update on reinsurance programme renewal</span><span>03 Jun 2026 · Capital markets day presentation available</span></div>
+    </div>
+  </div>`;
+}
+function m3Result(){
+  const rows=[['총보험료 (GWP)','48,200','+6.1%','25,600','+5.4%'],['영업이익','5,840','+9.4%','3,120','+7.2%'],['순이익','3,910','+12.3%','2,140','+8.7%'],['합산비율','93.8%','-1.2%p','92.9%','-0.8%p'],['지급여력비율 (Solvency II)','201%','+7%p','205%','+4%p']];
+  return `<div class="doc">
+    <div class="dh" data-g><small>기획파트 · 해외 보험사 벤치마킹 브리핑 · 초안 v1</small><h2>OO Global Insurance 실적 요약 (2025 연간 · 2026 상반기)</h2></div>
+    <section data-g id="r3-table" style="padding:0;border:0"><table class="bench"><tr><th>지표</th><th>2025 연간</th><th>YoY</th><th>2026 상반기</th><th>YoY</th></tr>
+      ${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="up">${r[2]}</td><td>${r[3]}</td><td class="up">${r[4]}</td></tr>`).join('')}
+    </table><p class="ex" style="margin-top:6px">단위: USD m · 가상 데이터</p></section>
+    <section data-g><h4>시사점</h4><ol><li>손해율 개선으로 합산비율 2년 연속 하락<sup>[1] p.18</sup></li><li>재보험 비용 상승분을 요율 인상으로 상쇄<sup>[2] p.7</sup></li><li>아시아 지역 보험료 +11%로 성장 견인<sup>[2] p.9</sup></li></ol></section>
+    <section data-g id="r3-src"><h4>출처</h4><div class="src"><span>[1] Annual Report 2025, p.14–22</span><span>[2] H1 2026 Results Presentation, p.5–9</span><span>[3] Solvency &amp; Financial Condition Report 2025, p.31</span></div></section>
+  </div>`;
+}
+
+const MISSIONS=[
+{ key:'m1', no:'01', dept:'투자운영파트', agent:'AGENT GOLD', emb:'G', color:'#D9A62E',
+  cardLines:['--w:90%','--w:70%','--w:82%'],
+  title:'위장 잠입: 투자 심사역',
+  directive:'당신은 지금부터 초기 스타트업 투자 심사역으로 위장 잠입합니다. IR/재무/시장 자료를 검토하고 1차 투자검토까지 수행하십시오.',
+  limit:'투자심사위원회 D-5', clearance:'L3 · TOP SECRET',
+  sideTitle:'COVER: VC ANALYST', sideText:'잠입 대상은 시니어 헬스케어 스타트업 CareLink. 자료는 많고, 숫자는 자료마다 다릅니다.',
+  winTitle:'투자검토 자료함 · CareLink', winApp:'PDF · Excel', resTitle:'1차투자검토메모_CareLink.docx', resApp:'Word',
+  blank:m1Blank, result:m1Result,
+  pain:{h:'자료 검토만 2~3일',l:['IR 47p · 재무제표 6시트 · 리포트 82p','수치는 자료마다 다르고','투심위까지 남은 시간은 5일']},
+  cursor:[[420,260],[760,330],[1260,300],[640,520]], btn:[1452,738],
+  files:[['E-01','IR_Deck_v7.pdf','47p'],['E-02','재무제표_2023-2025.xlsx','6시트'],['E-03','시장조사_시니어헬스케어.pdf','82p']],
+  greet:'요원, 위장 신분 확인 완료. 자료 3건을 받았습니다. 무엇부터 검토할까요?',
+  prompt:'첨부한 IR 자료, 재무제표, 시장 리포트로 1차 투자검토 메모를 작성해줘. 사업 요약, 시장 규모, 재무 핵심지표(성장률·번레이트·런웨이), 투자 포인트 3개, 리스크 3개, 추가 확인 질문 5개를 정리하고 수치마다 출처 페이지를 달아줘.',
+  keywords:['1차 투자검토 메모','시장 규모','재무 핵심지표','투자 포인트 3개','리스크 3개','출처 페이지'],
+  steps:[
+    {t:'IR 자료 47p 분석',d:'사업모델 · 고객 212곳 · 투자조건 추출',g:'E-01 IR p.4–18',sel:'#m1-ir'},
+    {t:'재무제표 6개 시트 분석',d:'매출 +182% · 월 번레이트 4.1억 · 런웨이 14개월',g:'E-02 시트2',sel:'#m1-burn'},
+    {t:'시장 리포트 교차 검증',d:'IR TAM 12조 vs 리포트 8.4조 → 불일치 표시',g:'E-03 p.23',sel:'#m1-mkt'},
+    {t:'투자검토 메모 초안 작성',d:'포인트 3 · 리스크 3 · 확인 질문 5 · 출처 9개',g:'Word',sel:'#m1-tam'}],
+  doneMsg:'초안 생성 완료 · 출처 9개 연결',
+  checks:[{sel:'#r1-mkt',note:'IR 담당자에게 TAM 산식 요청',dx:0,dy:-34},{sel:'#r1-risk',note:'+ 비교기업 2곳 멀티플 추가',dx:10,dy:-30}],
+  stamp:'심사역 검토 완료',
+  cs:{no:'CASE #001', title:'초기 스타트업 1차 투자검토', who:'투자운영파트 · 투자 심사 담당',
+      flow:['IR·재무·시장 자료 수작업 검토에 2~3일','IR 자료, 재무제표, 시장 리포트 (파일 3건)','파일 첨부 후 검토 항목 6개와 출처 표기를 지시','출처가 달린 1차 투자검토 메모 (Word)','초안은 30분, 심사역은 판단에 집중'],
+      bl:'1차 검토', before:20, after:3, unit:'시간', extra:'월 검토 가능 건수 4건 → 10건',
+      quote:'숫자 대조에 쓰던 시간을 투자 판단에 씁니다', tools:'Microsoft 365 Copilot Chat · Word', apply:['신사업기획','제휴·M&A','리스크관리','계열사 관리']}
+},
+{ key:'m2', no:'02', dept:'글로벌U/W기획', agent:'AGENT BLUE', emb:'B', color:'#4C8DFF',
+  cardLines:['--w:76%','--w:92%','--w:60%'],
+  title:'긴급 지령: 영국 이동',
+  directive:'Agent! 지금 바로 영국으로 이동하라는 지령이 내려왔습니다. 20분 안에 출장 품의를 올리십시오!',
+  limit:'20분', clearance:'L3 · URGENT',
+  sideTitle:'ORDER: LONDON', sideText:'출장 목적은 메일 속에, 일정은 캘린더에, 경비 한도는 규정집에 흩어져 있습니다. 남은 시간 20분.',
+  winTitle:'전자결재 · 새 기안 · 해외출장 품의서', winApp:'', resTitle:'전자결재 · 해외출장 품의서 (작성 중)', resApp:'',
+  blank:m2Blank, result:m2Result, timer:true,
+  pain:{h:'빈 양식, 남은 시간 20분',l:['출장 목적과 일정은 메일 속에','경비 한도는 규정집 제12조에','숙박비는 환율까지 직접 계산']},
+  cursor:[[520,190],[880,380],[640,560],[1080,640]], btn:[1452,738],
+  files:[['E-01','[긴급] 런던 출장 요청 (Outlook)','메일 4통'],['E-02','내 캘린더 · 10월','일정 23건'],['E-03','해외출장 규정.pdf','제12조']],
+  greet:'요원, 지령 수신. 메일과 일정, 출장 규정을 확인했습니다. 품의서를 작성할까요?',
+  prompt:'어제 받은 [긴급] 런던 출장 요청 메일과 내 10월 일정을 참고해서 해외출장 품의서를 작성해줘. 출장 규정의 숙박 한도와 일비를 적용하고, 세부 일정표와 경비 내역을 표로 만들어줘. 겹치는 일정이 있으면 알려줘.',
+  keywords:['런던 출장 요청 메일','10월 일정','해외출장 품의서','숙박 한도와 일비','세부 일정표','경비 내역','겹치는 일정'],
+  steps:[
+    {t:'긴급 출장 요청 메일 확인',d:'출장지 런던 · 10/19~23 · 목적: 재보험 갱신 협의',g:'E-01 Outlook',sel:'#f-where'},
+    {t:'내 일정 확인',d:'10/21 주간회의 충돌 → 대리 참석 요청 초안 작성',g:'E-02 캘린더',sel:'#f-plan'},
+    {t:'해외출장 규정 적용',d:'숙박 한도 £230/박 · 일비 13만원/일 적용',g:'E-03 규정 제12조',sel:'#f-cost'},
+    {t:'품의서 양식 채우기',d:'일정표 · 경비표 · 결재선 자동 구성',g:'전자결재 양식',sel:'#f-purpose'}],
+  doneMsg:'품의서 작성 완료 · 규정 위반 항목 0건',
+  checks:[{sel:'#f-cost',note:'히드로 공항철도 포함 확인 ✓',dx:320,dy:-26},{sel:'#f-purpose',note:'협의 안건 3건 첨부',dx:560,dy:40}],
+  stamp:'상신 완료',
+  cs:{no:'CASE #002', title:'해외 출장 품의 자동 작성', who:'글로벌U/W기획 · 해외 출장 담당',
+      flow:['메일·일정·규정을 오가며 품의 작성에 1시간','출장 요청 메일, 내 캘린더, 해외출장 규정','메일과 일정을 근거로 품의서 작성과 규정 적용을 지시','일정표와 경비표가 채워진 품의서','10분 만에 상신, 규정 위반 반려 0건'],
+      bl:'품의 작성', before:60, after:10, unit:'분', extra:'출장 품의 반려율 18% → 0%',
+      quote:'규정집을 다시 펼쳐볼 일이 없어졌어요', tools:'Outlook · Microsoft 365 Copilot Chat · 전자결재 양식', apply:['해외 출장자 전원','총무','교육 담당','영업']}
+},
+{ key:'m3', no:'03', dept:'기획파트', agent:'AGENT RED', emb:'R', color:'#E5484D',
+  cardLines:['--w:84%','--w:66%','--w:90%'],
+  title:'정보 확보: 해외 보험사',
+  directive:'글로벌 OO보험사의 실적 정보가 필요해요. 빠르게 확보할 수 있죠?',
+  limit:'오늘 오후 보고', clearance:'L3 · INTEL',
+  sideTitle:'TARGET: OO GLOBAL', sideText:'목표는 해외 보험사 홈페이지. 영문 보고서는 수백 페이지이고, 비교표는 처음부터 직접 만들어야 합니다.',
+  winTitle:'OO Global Insurance · Investors', winApp:'Browser', resTitle:'해외보험사_실적브리핑_OOGlobal.docx', resApp:'Word',
+  blank:m3Blank, result:m3Result,
+  pain:{h:'자료는 많은데, 어디에 있지?',l:['연차보고서 312p · 실적 발표 64p','영문 · USD · IFRS 17 기준','비교표는 처음부터 직접 작성']},
+  cursor:[[380,150],[960,390],[560,470],[1240,560]], btn:[1452,738],
+  files:[['WEB','oo-global.example/investors','IR 페이지'],['E-01','Annual Report 2025','312p'],['E-02','H1 2026 Results','64p']],
+  greet:'요원, 목표 확인. 공개된 IR 자료에서 실적을 확보하겠습니다. 어떤 지표가 필요합니까?',
+  prompt:'OO Global Insurance의 최근 실적을 정리해줘. 2025년 연간과 2026년 상반기 기준 총보험료, 영업이익, 순이익, 합산비율, 지급여력비율을 표로 만들고 전년 대비 증감을 계산해줘. 시사점 3개와 출처 링크도 달아줘.',
+  keywords:['최근 실적','2025년 연간과 2026년 상반기','표로','전년 대비 증감','시사점 3개','출처 링크'],
+  steps:[
+    {t:'웹 검색 · IR 페이지 탐색',d:'실적 발표 보도자료 · 보고서 3건 확인',g:'WEB · 3건',sel:'#t-news'},
+    {t:'Annual Report 312p 분석',d:'2025 연간 보험료 · 이익 · 합산비율 추출',g:'E-01 p.14–22',sel:'#t-ar'},
+    {t:'상반기 실적 비교',d:'2026 상반기 지표 · 전년 대비 증감 계산',g:'E-02 p.5–9',sel:'#t-h1'},
+    {t:'지급여력비율 확인',d:'Solvency II 비율 201% 확인',g:'E-03 p.31',sel:'#t-sfcr'}],
+  doneMsg:'브리핑 생성 완료 · 출처 3건 연결',
+  checks:[{sel:'#r3-table',note:'단위 USD m 명시 확인 ✓',dx:600,dy:248},{sel:'#r3-src',note:'IFRS 17 기준 주석 추가',dx:420,dy:-26}],
+  stamp:'기획파트 검토 완료',
+  cs:{no:'CASE #003', title:'해외 보험사 실적 벤치마킹', who:'기획파트 · 경영 벤치마킹 담당',
+      flow:['영문 보고서 수백 페이지에서 지표 수집 반나절','공개 IR 페이지, 연차보고서, 실적 발표 자료','웹 검색으로 지표 5개 추출과 증감 계산, 출처 표기를 지시','출처가 달린 실적 비교 브리핑','20분 만에 확보, 분기마다 같은 지시 재사용'],
+      bl:'자료 확보', before:240, after:20, unit:'분', extra:'분기 벤치마킹 3개사 → 8개사',
+      quote:'분기마다 같은 지시로 비교표를 다시 받습니다', tools:'Microsoft 365 Copilot Chat (웹 검색) · Excel', apply:['경영기획','IR','상품개발','리스크관리']}
+}];
+
+/* ===================== PHASES ===================== */
+const PHASES=[
+  {id:'brief',  label:'미션 수령',     dur:7000,  render:rBrief},
+  {id:'problem',label:'문제 상황',     dur:10000, render:rProblem},
+  {id:'call',   label:'에이전트 호출', dur:14000, render:rCall},
+  {id:'op',     label:'데이터 처리',   dur:16000, render:rOp},
+  {id:'result', label:'결과물 생성',   dur:10000, render:rResult},
+  {id:'check',  label:'사람 검토',     dur:7500,  render:rCheck},
+  {id:'case',   label:'사례 공개',     dur:16000, render:rCase},
+  {id:'outro',  label:'종료',          dur:6000,  render:rOutro},
+];
+
+/* ===================== ENGINE ===================== */
+const stage=$('#stage'), main=$('#main'), wrap=$('#wrap');
+const S={t:0,paused:false,ev:[],last:0,
+  at(ms,fn){this.ev.push({ms,fn});this.ev.sort((a,b)=>a.ms-b.ms)},
+  clear(){this.ev=[]},
+  loop(now){const dt=Math.min(100,now-(this.last||now));this.last=now;
+    if(!this.paused&&st.playing){this.t+=dt;
+      while(this.ev.length&&this.ev[0].ms<=this.t){const e=this.ev.shift();try{e.fn()}catch(err){console.error(err)}}}
+    requestAnimationFrame(n=>this.loop(n))}
+};
+const st={mi:-1,phase:-1,playing:false,starts:[],scale:.5};
+
+function fit(){const w=wrap.clientWidth;st.scale=w/1600;stage.style.setProperty('--s',st.scale)}
+new ResizeObserver(fit).observe(wrap);fit();
+
+function buildProg(){
+  $('#prog').innerHTML=PHASES.slice(0,7).map((p,i)=>`<div class="seg" data-i="${i}"><i></i><span>${String(i+1).padStart(2,'0')} ${p.label}</span></div>`).join('');
+}
+function setProg(j){
+  $$('.seg').forEach(seg=>{const i=+seg.dataset.i;seg.classList.remove('done','active');
+    if(i<j)seg.classList.add('done');
+    else if(i===j){void seg.offsetWidth;seg.style.setProperty('--d',PHASES[i].dur+'ms');seg.classList.add('active')}});
+}
+function readout(){
+  const r=$('#readout');
+  if(!st.playing){r.textContent='대기 화면';return}
+  const m=MISSIONS[st.mi];r.textContent=`MISSION ${m.no} · ${PHASES[st.phase].label} (${st.phase+1}/${PHASES.length})${S.paused?' · 일시정지':''}`;
+}
+
+function startMission(mi,from=0){
+  st.mi=mi;const m=MISSIONS[mi];
+  let acc=0;st.starts=PHASES.map(p=>{const s=acc;acc+=p.dur;return s});
+  const total=acc;
+  S.clear();S.t=st.starts[from];st.playing=true;st.phase=from;
+  S.paused=false;stage.classList.remove('paused');$('#bpause').textContent='일시정지';
+  stage.classList.remove('idle');stage.style.setProperty('--ac',m.color);
+  $('#tmid').innerHTML=`MISSION ${m.no} · <b>${m.agent}</b> · ${esc(m.dept)}`;
+  for(let j=from;j<PHASES.length;j++){const jj=j;S.at(st.starts[j],()=>enter(jj))}
+  S.at(total,goIdle);
+}
+function enter(j){
+  st.phase=j;setProg(j);readout();
+  const t0=st.starts[j];const c={at:(off,fn)=>S.at(t0+off,fn)};
+  PHASES[j].render(MISSIONS[st.mi],c);
+}
+function goIdle(){st.playing=false;st.mi=-1;st.phase=-1;S.clear();S.paused=false;stage.classList.remove('paused');rIdle();readout()}
+function jump(d){if(!st.playing)return;const n=Math.max(0,Math.min(PHASES.length-1,st.phase+d));startMission(st.mi,n)}
+function togglePause(){if(!st.playing)return;S.paused=!S.paused;stage.classList.toggle('paused',S.paused);$('#bpause').textContent=S.paused?'계속 재생':'일시정지';readout()}
+
+/* helpers */
+function typeRedact(c,sel,text,off,dur,after){
+  const n=Math.min(text.length,60);
+  c.at(off,()=>{const el=$(sel);if(el)el.innerHTML=`<span class="rd">${esc(text)}</span>`});
+  for(let k=1;k<=n;k++){const cut=Math.round(text.length*k/n);
+    c.at(off+dur*k/n,()=>{const el=$(sel);if(el)el.innerHTML=esc(text.slice(0,cut))+(cut<text.length?`<span class="rd">${esc(text.slice(cut))}</span>`:'')})}
+  if(after)c.at(off+dur+60,after);
+}
+function typePlain(c,el,text,off,dur){
+  const n=Math.max(1,Math.min(text.length,24));
+  for(let k=1;k<=n;k++){const cut=Math.round(text.length*k/n);c.at(off+dur*k/n,()=>{el.textContent=text.slice(0,cut)})}
+}
+function marked(m){let h=esc(m.prompt);m.keywords.forEach(k=>{h=h.split(esc(k)).join(`<mark>${esc(k)}</mark>`)});return h}
+function fmt(s){s=Math.max(0,Math.round(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function timerRun(c,from,to,off,dur,steps){
+  for(let k=0;k<=steps;k++){const v=from+(to-from)*k/steps;c.at(off+dur*k/steps,()=>{const t=$('#tval');if(t)t.textContent=fmt(v)})}
+}
+function relRect(el){const w=$('#win').getBoundingClientRect(),r=el.getBoundingClientRect(),s=st.scale;
+  return {x:(r.left-w.left)/s,y:(r.top-w.top)/s,w:r.width/s,h:r.height/s}}
+function clearHits(){$$('.hit').forEach(e=>e.classList.remove('hit'));$$('.hit-tag').forEach(e=>e.remove())}
+function hit(sel,tag){const el=$(sel);if(!el)return;clearHits();el.classList.add('hit');
+  const r=relRect(el),t=document.createElement('div');t.className='hit-tag';t.textContent=tag;
+  t.style.left=Math.max(8,r.x)+'px';t.style.top=Math.max(48,r.y-26)+'px';$('#win').appendChild(t);
+  const sc=$('#win .scan');sc.classList.remove('go');void sc.offsetWidth;sc.classList.add('go')}
+function pen(chk){const el=$(chk.sel);if(!el)return;const r=relRect(el);const win=$('#win');
+  const pad=10,W=r.w+pad*2,H=r.h+pad*2;
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','penmark');
+  svg.setAttribute('width',W);svg.setAttribute('height',H);svg.style.left=(r.x-pad)+'px';svg.style.top=(r.y-pad)+'px';
+  svg.innerHTML=`<ellipse cx="${W/2}" cy="${H/2}" rx="${W/2-3}" ry="${H/2-3}"/>`;win.appendChild(svg);
+  const n=document.createElement('div');n.className='pennote';n.textContent=chk.note;
+  n.style.left=(r.x+(chk.dx||0))+'px';n.style.top=(r.y+(chk.dy||-30))+'px';win.appendChild(n)}
+
+const CURSOR=`<svg class="cursor" id="cur" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
+function moveCur(x,y){const c=$('#cur');if(c){c.style.left=x+'px';c.style.top=y+'px'}}
+
+function winHTML(m,mode,narrow){
+  const res=mode!=='blank';
+  const title=res?m.resTitle:m.winTitle, app=res?m.resApp:m.winApp;
+  const timer=m.timer?`<span class="timer" id="timer"><small>품의 마감까지</small><span id="tval">20:00</span></span>`:`<span class="app">${esc(app)}</span>`;
+  return `<div class="win${narrow?' narrow':''}" id="win"><div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="wt">${esc(title)}</span>${timer}</div>
+    <div class="win-body">${res?m.result():m.blank()}</div><div class="scan"></div>
+    <div class="sa-btn" id="sabtn"><i>+</i>Secret Agent</div></div>`;
+}
+function panelHTML(m,o){
+  const files=m.files.map(f=>`<div class="chip${o.files?' on':''}"><b>${f[0]}</b><span>${esc(f[1])}</span><i>${esc(f[2])}</i></div>`).join('');
+  return `<aside class="panel${o.open?' open':''}${o.compact?' compact':''}" id="panel">
+    <div class="p-head"><span class="p-emb">${m.emb}</span><div><small>SECRET AGENT</small><b>${m.agent}</b></div><span class="p-sec">${esc(m.clearance.split(' · ')[0])} CLEARED</span></div>
+    <div class="p-body">
+      <div class="p-msg${o.greet?' on':''}" id="pgreet">${esc(m.greet)}</div>
+      <div class="p-files" id="pfiles">${files}</div>
+      <div class="p-prompt${o.prompt?' on':''}" id="pprompt"><small>지시 · PROMPT</small><p id="ptext">${o.prompt==='full'?marked(m):''}</p></div>
+      <ol class="p-steps" id="psteps">${(o.steps||[]).join('')}</ol>
+      <div class="p-status" id="pstatus">${o.status||''}</div>
+    </div>
+    <div class="p-input"><span>Secret Agent에게 지시하기…</span><b class="send" id="psend">전송</b></div>
+  </aside>`;
+}
+const stepLi=(s,ok)=>`<li class="st ${ok?'ok':'run'}"><span class="ic"></span><b>${esc(s.t)}</b><small>${esc(s.d)}</small><em>${esc(s.g)}</em></li>`;
+
+/* ===================== RENDERS ===================== */
+function rIdle(){
+  stage.classList.add('idle');stage.style.removeProperty('--ac');$('#tmid').textContent='STANDBY';setProg(-1);
+  main.innerHTML=`<div class="idle-wrap">
+    <div class="eyebrow">AX INTELLIGENCE AGENCY · CLASSIFIED MISSIONS</div>
+    <h1 class="idle-title">PICK YOUR MISSION<span>미션 카드 1장을 뽑으면 Secret Agent가 작전을 시작합니다</span></h1>
+    <div class="deck" id="deck">${MISSIONS.map((m,i)=>`
+      <button class="mcard" style="--ac:${m.color}" data-i="${i}" aria-label="미션 ${m.no} ${esc(m.dept)}">
+        <span class="no">MISSION<br>${m.no}</span><span class="dept">${esc(m.dept)}</span>
+        ${m.cardLines.map(w=>`<span class="rl" style="${w}"></span>`).join('')}
+        <span class="ts">TOP SECRET</span><span class="key">CARD ${m.no} · ${m.agent}</span>
+      </button>`).join('')}</div>
+    <div class="idle-hint">카드를 터치하거나 버튼 <b>1</b><b>2</b><b>3</b> 을 누르세요</div>
+  </div>`;
+  $$('.mcard').forEach(b=>b.addEventListener('click',()=>pick(+b.dataset.i)));
+}
+function pick(i){
+  if(st.playing)return;const deck=$('#deck');
+  if(!deck){startMission(i);return}
+  deck.classList.add('picking');$(`.mcard[data-i="${i}"]`).classList.add('picked');
+  setTimeout(()=>startMission(i),700);
+}
+
+function rBrief(m,c){
+  main.innerHTML=`<div class="brief">
+    <div class="bcard">
+      <div class="row"><span>AXIA · MISSION CARD</span><span>${esc(m.clearance)}</span></div>
+      <div class="no">MISSION ${m.no}</div>
+      <div class="dept">${esc(m.dept)} · ${esc(m.title)}</div>
+      <div class="dir" id="dir"></div>
+      <div class="meta"><div><small>담당 요원</small>${m.agent}</div><div><small>제한 시간</small>${esc(m.limit)}</div></div>
+      <div class="stampx" id="acc">ACCEPTED</div>
+    </div>
+    <div class="bside"><div class="eyebrow">${esc(m.sideTitle)}</div><h2>지령이<br>도착했습니다</h2><p>${esc(m.sideText)}</p>
+      <div class="flow5"><span>문제 상황</span><span>사용 데이터</span><span>Secret Agent 처리</span><span>결과물</span><span>효과 · 실제 사례</span></div></div>
+  </div>`;
+  typeRedact(c,'#dir','“'+m.directive+'”',700,3200);
+  c.at(4600,()=>$('#acc').classList.add('on'));
+}
+
+function rProblem(m,c){
+  main.innerHTML=winHTML(m,'blank',false)+`<div class="pain" id="pain"><div class="t">INCIDENT · 문제 상황</div><h3>${esc(m.pain.h)}</h3><ul>${m.pain.l.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`+CURSOR;
+  c.at(900,()=>$('#pain').classList.add('on'));
+  m.cursor.forEach((p,k)=>c.at(1400+k*1500,()=>moveCur(p[0],p[1])));
+  if(m.timer)timerRun(c,1200,1191,0,9000,9);
+  c.at(7800,()=>$('#sabtn').classList.add('on'));
+}
+
+function rCall(m,c){
+  main.innerHTML=winHTML(m,'blank',false)+panelHTML(m,{})+CURSOR;
+  $('#sabtn').classList.add('on');
+  const last=m.cursor[m.cursor.length-1];moveCur(last[0],last[1]);
+  if(m.timer)timerRun(c,1191,1176,0,14000,14);
+  c.at(300,()=>moveCur(m.btn[0],m.btn[1]));
+  c.at(1500,()=>{$('#cur').classList.add('click');$('#sabtn').classList.add('press')});
+  c.at(2000,()=>{$('#sabtn').classList.add('gone');$('#cur').style.opacity=0;$('#win').classList.add('narrow');$('#panel').classList.add('open')});
+  c.at(2900,()=>$('#pgreet').classList.add('on'));
+  $$('#pfiles .chip').forEach((ch,k)=>c.at(3700+k*400,()=>ch.classList.add('on')));
+  c.at(5000,()=>$('#pprompt').classList.add('on'));
+  typeRedact(c,'#ptext',m.prompt,5100,6400,()=>{$('#ptext').innerHTML=marked(m)});
+  c.at(12300,()=>{$('#psend').classList.add('press');$('#psend').textContent='전송됨'});
+  c.at(12900,()=>{$('#pstatus').textContent='작전 개시 · 데이터 3건 분석 시작'});
+}
+
+function rOp(m,c){
+  main.innerHTML=winHTML(m,'blank',true)+panelHTML(m,{open:true,files:true,prompt:'full',compact:true});
+  if(m.timer){c.at(0,()=>{$('#tval').textContent='19:36'});timerRun(c,1176,820,400,15000,40)}
+  m.steps.forEach((s,k)=>{
+    const t=500+k*3700;
+    c.at(t,()=>{$('#psteps').insertAdjacentHTML('beforeend',stepLi(s,false));hit(s.sel,s.g);$('#pstatus').textContent=`STEP ${k+1}/4 · 분석 중`});
+    c.at(t+2900,()=>{const li=$$('#psteps .st')[k];if(li){li.classList.remove('run');li.classList.add('ok')}});
+  });
+  c.at(15300,()=>{clearHits();$('#pstatus').textContent='결과물 작성 중…'});
+}
+
+function rResult(m,c){
+  main.innerHTML=winHTML(m,'result',true)+panelHTML(m,{open:true,files:true,prompt:'full',compact:true,steps:m.steps.map(s=>stepLi(s,true)),status:'결과물 작성 중…'});
+  if(m.timer){c.at(0,()=>{$('#tval').textContent='13:40'});timerRun(c,820,738,300,9000,12)}
+  const items=$$('#win [data-g]');
+  const gap=Math.min(800,8200/Math.max(1,items.length));
+  items.forEach((el,k)=>{
+    const t=300+k*gap;
+    if(el.dataset.v!==undefined){c.at(t,()=>el.classList.add('on'));typePlain(c,el,el.dataset.v,t,Math.max(250,gap*.9))}
+    else c.at(t,()=>el.classList.add('on'));
+  });
+  c.at(9200,()=>{$('#pstatus').textContent=m.doneMsg});
+}
+
+function rCheck(m,c){
+  main.innerHTML=winHTML(m,'result',true)+panelHTML(m,{open:true,files:true,prompt:'full',compact:true,steps:m.steps.map(s=>stepLi(s,true)),status:''});
+  const win=$('#win');win.classList.add('all-on');
+  $$('#win [data-v]').forEach(el=>{el.textContent=el.dataset.v});
+  if(m.timer){$('#tval').textContent='12:18';}
+  const ps=$('#pstatus');ps.classList.add('human');ps.textContent='사람 검토 단계 · 최종 판단은 요원(사람)이 합니다';
+  m.checks.forEach((ck,k)=>c.at(700+k*1900,()=>pen(ck)));
+  c.at(700+m.checks.length*1900+300,()=>{
+    const s=document.createElement('div');s.className='wstamp';s.textContent=m.stamp;win.appendChild(s);void s.offsetWidth;s.classList.add('on');
+    if(m.timer){const t=$('#timer');t.classList.add('ok');t.innerHTML='<small>미션 성공 · 남은 시간</small><span id="tval">12:18</span>'}
+  });
+}
+
+function rCase(m,c){
+  const cs=m.cs, keys=['var(--alert)','var(--hit)','var(--agent)','#E7EBF0','var(--ac)'];
+  const labels=['문제','사용 데이터','Secret Agent 처리','결과물','효과'];
+  const w=Math.max(4,Math.round(cs.after/cs.before*100));
+  main.innerHTML=`<div class="case">
+    <div class="case-head"><span class="no">${cs.no}</span><div><h2>${esc(cs.title)}</h2><div class="sub">${esc(cs.who)} · ${m.agent}의 실제 작전 기록</div></div><span class="declass" id="dcl">DECLASSIFIED</span></div>
+    <div class="strip">${cs.flow.map((t,i)=>`<div class="sbox" style="--k:${keys[i]}"><small>${String(i+1).padStart(2,'0')} ${labels[i]}</small><p>${esc(t)}</p></div>`).join('')}</div>
+    <div class="case-low">
+      <div class="cbox" id="eff"><h4>효과 · BEFORE / AFTER</h4>
+        <div class="bar"><span>BEFORE</span><i style="--w:100%;--bc:#5B6676"></i><span>${cs.before}${cs.unit}</span></div>
+        <div class="bar"><span>AFTER</span><i style="--w:${w}%;--bc:var(--ac)"></i><span>${cs.after}${cs.unit}</span></div>
+        <div class="big-effect">${esc(cs.bl)} ${cs.before}${cs.unit} → ${cs.after}${cs.unit}<small>${esc(cs.extra)}</small></div>
+        <span class="ex">예시 수치 · 실제 사례 확정 후 교체</span></div>
+      <div class="cbox"><h4>STEAL THIS PROMPT · 그대로 따라 쓰세요</h4><div class="steal">${esc(m.prompt)}</div><div class="tools">사용 도구 <b>${esc(cs.tools)}</b></div></div>
+      <div class="cbox"><h4>우리 부서도 할 수 있을까?</h4><div class="chips">${cs.apply.map(a=>`<span>${esc(a)}</span>`).join('')}</div>
+        <div class="tools">이 수법은 <b>자료 → 지시 → 검토</b> 세 단계면 충분합니다. 포켓 카드를 Debriefing Desk에서 받으세요.</div>
+        <div class="quote">“${esc(cs.quote)}”<small>${esc(cs.who.split(' · ')[0])} 담당자 · 예시 인용</small></div></div>
+    </div>
+  </div>`;
+  c.at(500,()=>$('#dcl').classList.add('on'));
+  $$('.sbox').forEach((b,k)=>c.at(1200+k*900,()=>b.classList.add('on')));
+  c.at(6000,()=>$('#eff').classList.add('go'));
+}
+
+function rOutro(m,c){
+  main.innerHTML=`<div class="outro"><div class="eyebrow">${m.agent} · MISSION ${m.no}</div><h2>MISSION COMPLETE</h2>
+    <p>${esc(m.cs.no)} 포켓 카드를 Debriefing Desk에서 받으세요</p><div class="cd" id="cd">다음 요원을 기다립니다 · 5</div></div>`;
+  for(let k=1;k<=5;k++)c.at(k*1000,()=>{const e=$('#cd');if(e)e.textContent='다음 요원을 기다립니다 · '+Math.max(0,5-k)});
+}
+
+/* ===================== NOTES (below stage) ===================== */
+$('#notes').innerHTML=MISSIONS.map(m=>`<div class="note" style="--c:${m.color}"><div class="who">MISSION ${m.no} · ${m.agent}</div><h3>${esc(m.dept)} · ${esc(m.title)}</h3>
+  <ol><li>시작 화면: ${m.key==='m1'?'IR·재무제표·시장 리포트가 뒤섞인 자료 화면':m.key==='m2'?'빈 해외출장 품의서 + 20분 카운트다운':'해외 보험사 IR 홈페이지'}</li>
+  <li>+Secret Agent 호출 → 데이터 ${m.files.length}건 첨부 → 지시(프롬프트) 공개</li>
+  <li>처리 4단계: 화면 위 근거 위치를 하나씩 표시</li>
+  <li>결과물: ${m.key==='m1'?'출처가 달린 1차 투자검토 메모':m.key==='m2'?'일정·경비가 채워진 품의서':'출처가 달린 실적 비교 브리핑'}</li>
+  <li>사람 검토(빨간 펜) → ${esc(m.cs.no)} 실제 사례 공개</li></ol></div>`).join('');
+
+/* ===================== WIRING ===================== */
+$$('[data-m]').forEach(b=>b.addEventListener('click',()=>{st.playing=false;S.clear();startMission(+b.dataset.m)}));
+$('#bprev').addEventListener('click',()=>jump(-1));
+$('#bnext').addEventListener('click',()=>jump(1));
+$('#bpause').addEventListener('click',togglePause);
+$('#bhome').addEventListener('click',goIdle);
+$('#bfull').addEventListener('click',()=>{try{const p=wrap.requestFullscreen&&wrap.requestFullscreen();if(p&&p.catch)p.catch(()=>{})}catch(e){}});
+document.addEventListener('fullscreenchange',fit);
+document.addEventListener('keydown',e=>{
+  if(e.target.closest('input,textarea'))return;
+  if(['1','2','3'].includes(e.key)&&!st.playing){pick(+e.key-1);return}
+  if(e.key===' '){e.preventDefault();if(st.playing)togglePause();else pick(Math.floor(Math.random()*3));return}
+  if(e.key==='ArrowRight')jump(1);
+  if(e.key==='ArrowLeft')jump(-1);
+});
+setInterval(()=>{const d=new Date();$('#clock').textContent=d.toTimeString().slice(0,8)},1000);
+
+buildProg();rIdle();requestAnimationFrame(n=>S.loop(n));
+})();
+</script>
