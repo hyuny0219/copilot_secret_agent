@@ -70,18 +70,42 @@ button{font:inherit;color:inherit}
 .stage.paused .pausemark{display:block}
 
 /* ---------- idle ---------- */
-.idle-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px}
+.idle-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
+.title-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;text-align:center;overflow:hidden}
+.radar{position:absolute;left:50%;top:46%;width:1100px;height:1100px;margin:-550px 0 0 -550px;border-radius:50%;pointer-events:none;
+  background:repeating-radial-gradient(circle,transparent 0 109px,rgba(92,200,240,.07) 110px 111px),conic-gradient(from 0deg,rgba(92,200,240,.16),transparent 22%);animation:sweep 6s linear infinite;opacity:.9}
+.radar::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(92,200,240,.06),rgba(92,200,240,.06)) center/1px 100% no-repeat,linear-gradient(rgba(92,200,240,.06),rgba(92,200,240,.06)) center/100% 1px no-repeat}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.title-wrap>*:not(.radar):not(.t-stamp){position:relative}
+.title-wrap .emb{width:104px;height:104px;filter:drop-shadow(0 10px 36px rgba(139,92,246,.55))}
+.t-main{margin:0;line-height:.86}
+.t-main .c{display:block;font-family:var(--f-ui);font-weight:700;font-size:84px;letter-spacing:-.01em;background:var(--cp-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.t-main .s{display:block;font-family:var(--f-display);font-weight:800;font-size:150px;letter-spacing:.04em;color:#F2F4F7}
+.t-sub{font-family:var(--f-mono);font-size:15px;letter-spacing:.32em;color:var(--mute)}
+.start-btn{margin-top:14px;font-family:var(--f-display);font-weight:800;font-size:46px;letter-spacing:.24em;padding:12px 60px 12px 72px;border:3px solid #fff;background:rgba(12,15,19,.6);color:#fff;cursor:pointer;animation:startPulse 1.8s ease-in-out infinite;transition:background .2s,color .2s}
+.start-btn:hover,.start-btn:focus-visible{background:#fff;color:var(--hq)}
+@keyframes startPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}60%{box-shadow:0 0 0 18px rgba(255,255,255,0)}}
+.t-hint{font-size:18px;color:var(--mute)}
+.t-stamp{position:absolute;right:150px;top:90px;font-family:var(--f-display);font-weight:800;font-size:40px;letter-spacing:.08em;color:var(--alert);border:5px solid var(--alert);padding:0 16px;transform:rotate(12deg);opacity:.75}
+.tx{width:980px;display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:center;background:rgba(20,25,32,.85);border:1px solid var(--line);border-left:4px solid var(--agent);padding:14px 20px}
+.tx small{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--agent)}
+.tx p{grid-column:1 / -1;margin:0;font-size:19px;line-height:1.55;color:#DDE3EA;min-height:3.1em}
+.wave{display:flex;gap:3px;align-items:center;height:16px}
+.wave i{width:3px;height:4px;background:var(--agent);border-radius:2px}
+.tx.speaking .wave i{animation:wv .9s ease-in-out infinite}
+.wave i:nth-child(2){animation-delay:.15s!important}.wave i:nth-child(3){animation-delay:.3s!important}.wave i:nth-child(4){animation-delay:.45s!important}.wave i:nth-child(5){animation-delay:.6s!important}
+@keyframes wv{50%{height:16px}}
 .eyebrow{font-family:var(--f-mono);font-size:14px;letter-spacing:.32em;color:var(--mute)}
-.idle-title{font-family:var(--f-display);font-weight:800;font-size:92px;letter-spacing:.04em;line-height:.9;margin:0;text-align:center}
-.idle-title span{display:block;font-family:var(--f-body);font-weight:500;font-size:26px;letter-spacing:0;color:var(--mute);margin-top:14px}
+.idle-title{font-family:var(--f-display);font-weight:800;font-size:76px;letter-spacing:.04em;line-height:.9;margin:0;text-align:center}
+.idle-title span{display:block;font-family:var(--f-body);font-weight:500;font-size:22px;letter-spacing:0;color:var(--mute);margin-top:10px}
 .deck{display:flex;gap:44px}
-.mcard{--ac:#888;width:300px;height:400px;position:relative;background:#B79F78;color:#2A2118;border-radius:6px;padding:26px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px rgba(0,0,0,.55);cursor:pointer;transition:transform .35s ease, opacity .35s ease;border:0;text-align:left}
+.mcard{--ac:#888;width:290px;height:350px;position:relative;background:#B79F78;color:#2A2118;border-radius:6px;padding:26px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px rgba(0,0,0,.55);cursor:pointer;transition:transform .35s ease, opacity .35s ease;border:0;text-align:left}
 .mcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--ac);border-radius:6px 0 0 6px}
 .mcard:hover{transform:translateY(-12px) rotate(-1deg)}
 .mcard .no{font-family:var(--f-display);font-weight:800;font-size:64px;line-height:.85;letter-spacing:.02em}
 .mcard .dept{font-weight:700;font-size:20px}
 .mcard .rl{height:14px;background:#2A2118;width:var(--w);opacity:.85}
-.mcard .ts{position:absolute;right:20px;bottom:64px;font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:.06em;color:#B4142B;border:4px solid #B4142B;padding:2px 12px;transform:rotate(-9deg);opacity:.85}
+.mcard .ts{position:absolute;right:20px;bottom:56px;font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:.06em;color:#B4142B;border:4px solid #B4142B;padding:2px 12px;transform:rotate(-9deg);opacity:.85}
 .mcard .key{margin-top:auto;font-family:var(--f-mono);font-size:13px;letter-spacing:.14em}
 .deck.picking .mcard{opacity:.15;transform:scale(.94)}
 .deck.picking .mcard.picked{opacity:1;transform:translateY(-24px) scale(1.06)}
@@ -435,13 +459,14 @@ button{font:inherit;color:inherit}
       <button class="btn" id="bpause">일시정지</button>
       <button class="btn" id="bnext">다음 단계</button>
       <button class="btn" id="bhome">처음 화면</button>
+      <button class="btn on" id="bsound">소리: 켜짐</button>
       <button class="btn" id="bfull">전체 화면</button>
       <span class="readout" id="readout">대기 화면</span>
     </div>
   </div>
 
   <section class="notes" id="notes"></section>
-  <p class="kiosk"><b>진행 방식:</b> <b>클릭 진행</b>에서는 Copilot 호출, 요청 전송, 근거 확인, 검토 표시, 승인 도장 순간에 화면이 멈추고 누를 곳이 강조됩니다. 그 부분을 직접 누르거나 <b>Enter</b>·<b>→</b>·프레젠터 리모컨으로 다음 단계로 넘어갑니다. <b>자동 재생</b>은 무인 키오스크용으로 카드 1장만 뽑으면 끝까지 재생됩니다. 위의 이전·다음·일시정지 버튼은 시안 검토용이며 키보드 <b>1·2·3</b>(미션 선택), <b>Space</b>(무작위 미션 / 일시정지), <b>← →</b>(단계 이동)로도 조작할 수 있습니다. 화면 속 회사명, 인물, 수치는 모두 가상 데이터이며 실제 사례가 확정되면 교체합니다.</p>
+  <p class="kiosk"><b>시작:</b> 시작 화면에서 <b>START</b>(또는 Space·Enter)를 누르면 본부 음성 지령과 함께 미션 카드 3장이 나타나고, 미션을 고르면 미션별 BGM이 재생됩니다. 소리는 아래 <b>소리</b> 버튼으로 끌 수 있습니다. <b>진행 방식:</b> <b>클릭 진행</b>에서는 Copilot 호출, 요청 전송, 근거 확인, 검토 표시, 승인 도장 순간에 화면이 멈추고 누를 곳이 강조됩니다. 그 부분을 직접 누르거나 <b>Enter</b>·<b>→</b>·프레젠터 리모컨으로 다음 단계로 넘어갑니다. <b>자동 재생</b>은 무인 키오스크용으로 카드 1장만 뽑으면 끝까지 재생됩니다. 위의 이전·다음·일시정지 버튼은 시안 검토용이며 키보드 <b>1·2·3</b>(미션 선택), <b>Space</b>(무작위 미션 / 일시정지), <b>← →</b>(단계 이동)로도 조작할 수 있습니다. 화면 속 회사명, 인물, 수치는 모두 가상 데이터이며 실제 사례가 확정되면 교체합니다.</p>
 </div>
 
 <script>
@@ -672,7 +697,7 @@ const S={t:0,paused:false,gated:false,ev:[],last:0,
       while(this.ev.length&&this.ev[0].ms<=this.t){const e=this.ev.shift();try{e.fn()}catch(err){console.error(err)}}}
     requestAnimationFrame(n=>this.loop(n))}
 };
-const st={mi:-1,phase:-1,playing:false,starts:[],scale:.5,interactive:true,gate:null};
+const st={screen:'title',mi:-1,phase:-1,playing:false,starts:[],scale:.5,interactive:true,gate:null};
 try{if(localStorage.getItem('dsMode')==='auto')st.interactive=false}catch(e){}
 const pdur=p=>st.interactive&&p.idur?p.idur:p.dur;
 
@@ -699,6 +724,7 @@ function startMission(mi,from=0){
   const total=acc;
   S.clear();S.t=st.starts[from];st.playing=true;st.phase=from;
   S.paused=false;stage.classList.remove('paused');$('#bpause').textContent='일시정지';
+  st.screen='mission';stopNarration();bgmStart(m.key);
   stage.classList.remove('idle');stage.style.setProperty('--ac',m.color);
   $('#tmid').innerHTML=`MISSION ${m.no} · <b>${m.agent}</b> · ${esc(m.dept)}`;
   for(let j=from;j<PHASES.length;j++){const jj=j;S.at(st.starts[j],()=>enter(jj))}
@@ -709,7 +735,7 @@ function enter(j){
   const t0=st.starts[j];const c={at:(off,fn)=>S.at(t0+off,fn),gate:(off,sel,label,fn,pos)=>S.at(t0+off,()=>openGate(sel,label,fn,pos))};
   PHASES[j].render(MISSIONS[st.mi],c);
 }
-function goIdle(){closeGate();st.playing=false;st.mi=-1;st.phase=-1;S.clear();S.paused=false;stage.classList.remove('paused');rIdle();readout()}
+function goIdle(){closeGate();st.playing=false;st.mi=-1;st.phase=-1;S.clear();S.paused=false;stage.classList.remove('paused');bgmStop(1.2);rTitle();readout()}
 function jump(d){if(!st.playing)return;const n=Math.max(0,Math.min(PHASES.length-1,st.phase+d));startMission(st.mi,n)}
 function stageRect(el){const r=el.getBoundingClientRect(),g=stage.getBoundingClientRect(),k=st.scale;return {x:(r.left-g.left)/k,y:(r.top-g.top)/k,w:r.width/k,h:r.height/k}}
 function openGate(sel,label,fn,pos){
@@ -727,7 +753,9 @@ function closeGate(){const g=st.gate;if(g){g.el.classList.remove('gate');g.el.re
 function setMode(inter){st.interactive=inter;try{localStorage.setItem('dsMode',inter?'click':'auto')}catch(e){}
   const b=$('#bmode');b.textContent=inter?'진행: 클릭':'진행: 자동';b.classList.toggle('on',inter);
   if(st.playing)startMission(st.mi,st.phase)}
-function togglePause(){if(!st.playing)return;S.paused=!S.paused;stage.classList.toggle('paused',S.paused);$('#bpause').textContent=S.paused?'계속 재생':'일시정지';readout()}
+function togglePause(){if(!st.playing)return;S.paused=!S.paused;stage.classList.toggle('paused',S.paused);
+  if(AU.ctx){S.paused?AU.ctx.suspend():AU.ctx.resume()}if(AU.track&&AU.track.file){S.paused?AU.track.file.pause():AU.track.file.play().catch(()=>{})}
+  $('#bpause').textContent=S.paused?'계속 재생':'일시정지';readout()}
 
 /* helpers */
 function typeRedact(c,sel,text,off,dur,after){
@@ -767,7 +795,7 @@ function moveCur(x,y){const c=$('#cur');if(c){c.style.left=x+'px';c.style.top=y+
 let EMB=`<svg class="emb" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="8" width="16" height="19" rx="7" fill="url(#cpg1)" transform="rotate(-20 11 17.5)"/><rect x="13" y="5" width="16" height="19" rx="7" fill="url(#cpg2)" opacity=".9" transform="rotate(-20 21 14.5)"/></svg>`;
 /* 공식 로고: assets/copilot-logo.svg 파일이 있으면 자동으로 공식 로고로 교체됩니다 (없으면 위 임시 엠블럼 사용). */
 const LOGO_PATH='assets/copilot-logo.svg';
-(function(){const im=new Image();im.onload=()=>{EMB=`<img class="emb" src="${LOGO_PATH}" alt="Microsoft Copilot">`};im.src=LOGO_PATH})();
+(function(){const im=new Image();im.onload=()=>{EMB=`<img class="emb" src="${LOGO_PATH}" alt="Microsoft Copilot">`;if(typeof st!=='undefined'&&st.screen==='title'&&!st.playing)rTitle()};im.src=LOGO_PATH})();
 const FIC={pdf:['PDF','#D23C3C'],xlsx:['X','#1E8E4E'],docx:['W','#2B5FD9'],mail:['M','#1F6FD1'],cal:['31','#7A4DD8'],web:['www','#5B5B66']};
 const fcard=f=>{const t=FIC[f[3]]||FIC.pdf;return `<span class="fcard"><span class="fic" style="background:${t[1]}">${t[0]}</span><span class="fn">${esc(f[1])}</span><i>${esc(f[2])}</i></span>`};
 function winHTML(m,mode,narrow){
@@ -801,10 +829,140 @@ const splashHTML=()=>`<div class="cp-splash" id="splash">${EMB}<b>Microsoft 365 
 const shim=t=>`<span class="shim">${esc(t)}</span>`;
 
 /* ===================== RENDERS ===================== */
-function rIdle(){
+/* ===================== AUDIO ===================== */
+const NARR='안녕하십니까 Copilot Secret Agent에 오신걸 환영합니다. 당신은 지금부터 삼성화재 곳곳에 비밀리에 활동하는 Copilot Agent를 활용하여 주어진 미션을 수행해야 합니다. 미션을 선택하시길 바랍니다.';
+const NARR_TTS='안녕하십니까. 코파일럿 시크릿 에이전트에 오신 것을 환영합니다. 당신은 지금부터, 삼성화재 곳곳에 비밀리에 활동하는 코파일럿 에이전트를 활용하여, 주어진 미션을 수행해야 합니다. 미션을 선택하시길 바랍니다.';
+/* 녹음 파일이 있으면 우선 사용: assets/voice-intro.mp3, assets/bgm-m1.mp3 · bgm-m2.mp3 · bgm-m3.mp3 */
+const AVAIL={};
+['assets/voice-intro.mp3','assets/bgm-m1.mp3','assets/bgm-m2.mp3','assets/bgm-m3.mp3'].forEach(f=>{try{const a=new Audio();a.preload='metadata';a.addEventListener('loadedmetadata',()=>{AVAIL[f]=true},{once:true});a.addEventListener('error',()=>{},{once:true});a.src=f}catch(e){}});
+const AU={ctx:null,out:null,dly:null,noise:null,on:true,track:null,voice:null};
+try{if(localStorage.getItem('dsSound')==='off')AU.on=false}catch(e){}
+function auInit(){
+  if(AU.ctx){if(AU.ctx.state==='suspended'&&!S.paused)AU.ctx.resume();return true}
+  const C=window.AudioContext||window.webkitAudioContext;if(!C)return false;
+  const c=new C();AU.ctx=c;
+  const comp=c.createDynamicsCompressor();comp.threshold.value=-16;comp.ratio.value=4;comp.connect(c.destination);
+  AU.out=c.createGain();AU.out.gain.value=AU.on?0.9:0;AU.out.connect(comp);
+  const d=c.createDelay(1.5);d.delayTime.value=0.33;const fb=c.createGain();fb.gain.value=0.3;const dg=c.createGain();dg.gain.value=0.4;
+  d.connect(fb);fb.connect(d);d.connect(dg);dg.connect(AU.out);AU.dly=d;
+  const len=c.sampleRate,buf=c.createBuffer(1,len,c.sampleRate),ch=buf.getChannelData(0);for(let i=0;i<len;i++)ch[i]=Math.random()*2-1;AU.noise=buf;
+  return true;
+}
+const mtof=n=>440*Math.pow(2,(n-69)/12);
+function vEnv(g,t,a,v,dur){g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(0.0001,t+dur)}
+function iBass(dst,n,t,dur,v,type,cut){const c=AU.ctx,o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();
+  o.type=type||'sawtooth';o.frequency.value=mtof(n);f.type='lowpass';f.Q.value=5;f.frequency.setValueAtTime((cut||600)*2.4,t);f.frequency.exponentialRampToValueAtTime((cut||600)*.5,t+dur);
+  vEnv(g,t,.008,v,dur);o.connect(f);f.connect(g);g.connect(dst);o.start(t);o.stop(t+dur+.05)}
+function iTone(dst,n,t,dur,v,type,send,att){const c=AU.ctx,o=c.createOscillator(),g=c.createGain();o.type=type||'triangle';o.frequency.value=mtof(n);
+  vEnv(g,t,att||.006,v,dur);o.connect(g);g.connect(dst);if(send){const sg=c.createGain();sg.gain.value=send;g.connect(sg);sg.connect(AU.dly)}o.start(t);o.stop(t+dur+.05)}
+function iNoise(dst,t,dur,v,ft,fq,q){const c=AU.ctx,s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=AU.noise;f.type=ft;f.frequency.value=fq;f.Q.value=q||1;
+  vEnv(g,t,.002,v,dur);s.connect(f);f.connect(g);g.connect(dst);s.start(t,Math.random()*.5);s.stop(t+dur+.05)}
+function iKick(dst,t,v){const c=AU.ctx,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(42,t+.13);
+  vEnv(g,t,.003,v,.32);o.connect(g);g.connect(dst);o.start(t);o.stop(t+.4)}
+function iPad(dst,notes,t,dur,v){const c=AU.ctx,f=c.createBiquadFilter(),g=c.createGain();f.type='lowpass';f.frequency.value=900;
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v,t+dur*.35);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);f.connect(g);g.connect(dst);
+  notes.forEach(n=>[-6,6].forEach(dt=>{const o=c.createOscillator();o.type='sawtooth';o.frequency.value=mtof(n);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+dur+.05)}))}
+const hat=(d,t,v)=>iNoise(d,t,.05,v,'highpass',7500);
+const rim=(d,t,v)=>{iNoise(d,t,.09,v,'bandpass',2200,1.2);iTone(d,62,t,.05,v*.5,'triangle')};
+const snare=(d,t,v)=>{iNoise(d,t,.16,v,'bandpass',1700,.7);iTone(d,55,t,.08,v*.4,'triangle')};
+
+/* 미션별 BGM (자체 작곡 · 실시간 합성) */
+const TRACKS={
+  amb:{bpm:56,div:1,vol:.32,play(d,s,t,sp){            /* 지령 대기: 심장 박동 + 저음 드론 */
+    iKick(d,t,.45);iKick(d,t+.2,.22);
+    if(s%4===0)iPad(d,[45,52,57],t,sp*4.2,.05);
+    if(s%8===6)iTone(d,81,t,1.4,.05,'sine',.5)}},
+  m1:{bpm:96,div:2,swing:.2,vol:.55,play(d,s,t,sp){     /* 투자 심사 잠입: 누아르 재즈 */
+    const bar=Math.floor(s/8)%4,pos=s%8;
+    const walk=[[40,43,45,46],[45,48,52,43],[42,45,48,46],[47,46,44,43]];
+    const ch=[[55,59,62,66],[60,64,67,71],[57,60,64,69],[57,63,66,72]];
+    if(pos%2===0)iBass(d,walk[bar][pos/2],t,sp*1.9,.5,'triangle',900);
+    if([0,2,3,4,6,7].includes(pos))hat(d,t,pos%2?.05:.08);
+    if(pos===2||pos===6)rim(d,t,.16);
+    if(pos===3)ch[bar].forEach(n=>iTone(d,n,t,1.3,.045,'sine',.35));
+    if(bar%2===0){const mel={0:52,1:55,3:59,5:58};if(mel[pos]!==undefined)iTone(d,mel[pos],t,.28,.07,'square',.25)}}},
+  m2:{bpm:138,div:4,vol:.48,play(d,s,t,sp){              /* 긴급 출국: 질주하는 액션 */
+    const bar=Math.floor(s/16)%4,pos=s%16;
+    const root=[38,34,36,33][bar],ch=[[62,65,69],[62,65,70],[64,67,72],[61,64,69]][bar];
+    iBass(d,root+(pos%4===2?12:0),t,sp*.9,.32,'sawtooth',480);
+    if(pos===0||pos===8||(bar===3&&pos===10))iKick(d,t,.85);
+    if(pos===4||pos===12)snare(d,t,.3);
+    if(pos%2===0)hat(d,t,pos%4===2?.07:.04);
+    if(pos%4===0)iTone(d,96,t,.03,.08,'square');
+    if(pos===0||pos===6||pos===11)ch.forEach(n=>iTone(d,n,t,.13,.06,'sawtooth'));
+    if(bar===3&&pos>=12)iTone(d,74+(pos-12),t,.12,.05,'sawtooth',.2)}},
+  m3:{bpm:104,div:4,vol:.55,play(d,s,t,sp){              /* 정보 확보: 잠입 · 소나 */
+    const bar=Math.floor(s/16)%4,pos=s%16;
+    const root=[36,32,29,31][bar],arp=[[60,63,67,70],[56,60,63,68],[53,56,60,65],[55,59,62,67]][bar],ord=[0,1,2,3,2,1,0,2];
+    if(pos%2===0)iBass(d,root,t,sp*1.5,.42,'triangle',320);
+    iTone(d,arp[ord[pos%8]]+12,t,.16,.035,'triangle',.3);
+    if(pos===0||pos===10)iKick(d,t,.5);
+    if(pos%4===2)hat(d,t,.04);
+    if(pos===0)iPad(d,arp.slice(0,3).map(n=>n-12),t,sp*16,.025);
+    if(bar===0&&pos===0)iTone(d,84,t,1.8,.09,'sine',.6)}}
+};
+function bgmStart(key){
+  if(!auInit())return;if(AU.track&&AU.track.key===key)return;bgmStop(.5);
+  const c=AU.ctx,tr=TRACKS[key],g=c.createGain();g.gain.setValueAtTime(0.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(tr.vol,c.currentTime+1.2);g.connect(AU.out);
+  const T={key,g,step:0,next:c.currentTime+.08,sp:60/tr.bpm/tr.div,tr,timer:null,file:null};AU.track=T;
+  const f=`assets/bgm-${key}.mp3`;
+  if(AVAIL[f]){const a=new Audio(f);a.loop=true;a.volume=AU.on?.7:0;T.file=a;a.play().catch(()=>{});return}
+  T.timer=setInterval(()=>{if(c.state!=='running')return;
+    while(T.next<c.currentTime+.15){tr.play(T.g,T.step,T.next,T.sp);
+      const sw=tr.swing?(T.step%2===0?1+tr.swing:1-tr.swing):1;T.next+=T.sp*sw;T.step++}},25);
+}
+function bgmStop(fade){const T=AU.track;if(!T)return;AU.track=null;clearInterval(T.timer);
+  if(T.file){const a=T.file;const iv=setInterval(()=>{a.volume=Math.max(0,a.volume-.07);if(a.volume<=0){clearInterval(iv);a.pause()}},60)}
+  const c=AU.ctx;try{T.g.gain.cancelScheduledValues(c.currentTime);T.g.gain.setValueAtTime(Math.max(.0001,T.g.gain.value),c.currentTime);T.g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+(fade||.6))}catch(e){}
+  setTimeout(()=>{try{T.g.disconnect()}catch(e){}},(fade||.6)*1000+400)}
+function sting(){if(!auInit())return;const c=AU.ctx,t=c.currentTime+.03;iKick(AU.out,t,1);iBass(AU.out,33,t,2.6,.5,'sawtooth',220);iNoise(AU.out,t,1.2,.12,'lowpass',900);iTone(AU.out,88,t+.15,.12,.08,'square',.4);iTone(AU.out,88,t+.32,.12,.08,'square',.4)}
+let txTimer=null;
+function txType(text,dur){clearInterval(txTimer);let i=0;const n=text.length,step=Math.max(18,dur/n);
+  txTimer=setInterval(()=>{const e=$('#txt');if(!e){clearInterval(txTimer);return}i++;e.textContent=text.slice(0,i);if(i>=n)clearInterval(txTimer)},step)}
+function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));
+  return vs.find(v=>/InJoon|Hyunsu|BongJin|GookMin|Male|남/i.test(v.name))||vs[0]||null}catch(e){return null}}
+try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}catch(e){}
+function stopNarration(){clearInterval(txTimer);try{speechSynthesis.cancel()}catch(e){}if(AU.voice){AU.voice.pause();AU.voice=null}const b=$('.tx');if(b)b.classList.remove('speaking')}
+function narrate(){
+  stopNarration();const box=$('.tx');if(box)box.classList.add('speaking');txType(NARR,14500);
+  const done=()=>{const b=$('.tx');if(b)b.classList.remove('speaking')};
+  if(!AU.on){setTimeout(done,14500);return}
+  if(AVAIL['assets/voice-intro.mp3']){const a=new Audio('assets/voice-intro.mp3');AU.voice=a;a.onended=done;a.play().catch(()=>speak(done));return}
+  speak(done);
+}
+function speak(done){
+  let ss;try{ss=window.speechSynthesis}catch(e){}if(!ss){setTimeout(done,14500);return}
+  ss.cancel();const u=new SpeechSynthesisUtterance(NARR_TTS);u.lang='ko-KR';const v=pickVoice();if(v)u.voice=v;
+  u.pitch=.45;u.rate=.88;u.volume=1;u.onend=done;u.onerror=done;ss.speak(u);
+}
+function setSound(on){AU.on=on;try{localStorage.setItem('dsSound',on?'on':'off')}catch(e){}
+  const b=$('#bsound');b.textContent=on?'소리: 켜짐':'소리: 꺼짐';b.classList.toggle('on',on);
+  if(AU.out)AU.out.gain.value=on?.9:0;if(AU.track&&AU.track.file)AU.track.file.volume=on?.7:0;
+  if(!on){try{speechSynthesis.cancel()}catch(e){}if(AU.voice)AU.voice.pause()}}
+
+/* ===================== TITLE / SELECT ===================== */
+function rTitle(){
+  st.screen='title';stopNarration();
   stage.classList.add('idle');stage.style.removeProperty('--ac');$('#tmid').textContent='STANDBY';setProg(-1);
+  main.innerHTML=`<div class="title-wrap"><div class="radar"></div><span class="t-stamp">TOP SECRET</span>
+    ${EMB}
+    <h1 class="t-main"><span class="c">Copilot</span><span class="s">SECRET AGENT</span></h1>
+    <div class="t-sub">AX DAY 2026 · AX INTELLIGENCE AGENCY</div>
+    <button class="start-btn" id="startbtn">START</button>
+    <div class="t-hint">START를 누르면 본부의 지령이 시작됩니다</div></div>`;
+  $('#startbtn').addEventListener('click',startIntro);
+}
+function startIntro(){
+  if(st.playing)return;auInit();sting();rSelect();
+  setTimeout(()=>{if(st.screen==='select'){bgmStart('amb');narrate()}},700);
+}
+function rIdle(){rSelect()}
+function rSelect(){
+  st.screen='select';
+  stage.classList.add('idle');stage.style.removeProperty('--ac');$('#tmid').textContent='INCOMING TRANSMISSION';setProg(-1);
   main.innerHTML=`<div class="idle-wrap">
     <div class="eyebrow">AX INTELLIGENCE AGENCY · CLASSIFIED MISSIONS</div>
+    <div class="tx"><span class="wave"><i></i><i></i><i></i><i></i><i></i></span><small>INCOMING TRANSMISSION · 본부 지령</small><p id="txt"></p></div>
     <h1 class="idle-title">PICK YOUR MISSION<span>미션 카드 1장을 뽑으면 Copilot 요원이 작전을 시작합니다</span></h1>
     <div class="deck" id="deck">${MISSIONS.map((m,i)=>`
       <button class="mcard" style="--ac:${m.color}" data-i="${i}" aria-label="미션 ${m.no} ${esc(m.dept)}">
@@ -817,12 +975,11 @@ function rIdle(){
   $$('.mcard').forEach(b=>b.addEventListener('click',()=>pick(+b.dataset.i)));
 }
 function pick(i){
-  if(st.playing)return;const deck=$('#deck');
+  if(st.playing)return;stopNarration();auInit();const deck=$('#deck');
   if(!deck){startMission(i);return}
   deck.classList.add('picking');$(`.mcard[data-i="${i}"]`).classList.add('picked');
   setTimeout(()=>startMission(i),700);
 }
-
 function rBrief(m,c){
   main.innerHTML=`<div class="brief">
     <div class="bcard">
@@ -966,10 +1123,12 @@ $('#bprev').addEventListener('click',()=>jump(-1));
 $('#bnext').addEventListener('click',()=>jump(1));
 $('#bpause').addEventListener('click',togglePause);
 $('#bhome').addEventListener('click',goIdle);
+$('#bsound').addEventListener('click',()=>setSound(!AU.on));setSound(AU.on);
 $('#bfull').addEventListener('click',()=>{try{const p=wrap.requestFullscreen&&wrap.requestFullscreen();if(p&&p.catch)p.catch(()=>{})}catch(e){}});
 document.addEventListener('fullscreenchange',fit);
 document.addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea'))return;
+  if(!st.playing&&st.screen==='title'&&(e.key===' '||e.key==='Enter')){e.preventDefault();startIntro();return}
   if(['1','2','3'].includes(e.key)&&!st.playing){pick(+e.key-1);return}
   if(e.key===' '){e.preventDefault();if(st.playing)togglePause();else pick(Math.floor(Math.random()*3));return}
   if(st.gate&&['Enter','ArrowRight','PageDown'].includes(e.key)){e.preventDefault();st.gate.done();return}
@@ -978,6 +1137,6 @@ document.addEventListener('keydown',e=>{
 });
 setInterval(()=>{const d=new Date();$('#clock').textContent=d.toTimeString().slice(0,8)},1000);
 
-buildProg();rIdle();requestAnimationFrame(n=>S.loop(n));
+buildProg();rTitle();requestAnimationFrame(n=>S.loop(n));
 })();
 </script>
