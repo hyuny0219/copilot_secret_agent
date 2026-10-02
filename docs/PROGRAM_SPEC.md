@@ -64,7 +64,7 @@
 | IDLE | 사건 폴더 4개가 **8초 간격으로 차례로 스포트라이트**, "SELECT CASE → PRESS START" | `1`~`4` → ARMED. **START만 누르면 지금 스포트라이트된 사례를 재생** (13절 합의 ②) |
 | ARMED | 선택한 사건 표지, START 안내 점멸 | 다른 숫자 → 사건 변경. START → PLAYING. 15초 무입력 → IDLE |
 | PLAYING | 사례 MP4 재생 + 셸 오버레이(진행 바) | 방문객 입력 **폐기** (해제될 때까지). 영상 정지·디코딩 오류 5초 → IDLE + 미완료 기록 |
-| OUTRO | "MISSION COMPLETE · 포켓 카드를 Debriefing Desk에서 받으세요" | 10초 후 IDLE. 입력은 키 해제 이후부터 다음 상태에서 인정 |
+| OUTRO | "MISSION COMPLETE · 자리로 돌아가 같은 지시를 Copilot에 입력해 보세요" | 10초 후 IDLE. 입력은 키 해제 이후부터 다음 상태에서 인정 |
 | SAFE_ATTRACT | 정적 로컬 루프 영상 | 방문객 입력 무시. 운영 패널로만 복귀 |
 
 ### 5-1. 입력 규칙 (물리 버튼)

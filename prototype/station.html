@@ -935,7 +935,7 @@ function rCase(m,c){
         <span class="ex">예시 수치 · 실제 사례 확정 후 교체</span></div>
       <div class="cbox"><h4>STEAL THIS PROMPT · Copilot에 그대로 입력하세요</h4><div class="steal">${esc(m.prompt)}</div><div class="tools">사용 도구 <b>${esc(cs.tools)}</b></div></div>
       <div class="cbox"><h4>우리 부서도 할 수 있을까?</h4><div class="chips">${cs.apply.map(a=>`<span>${esc(a)}</span>`).join('')}</div>
-        <div class="tools">이 수법은 <b>자료 → 지시 → 검토</b> 세 단계면 충분합니다. 포켓 카드를 Debriefing Desk에서 받으세요.</div>
+        <div class="tools">이 수법은 <b>자료 → 지시 → 검토</b> 세 단계면 충분합니다. 왼쪽 프롬프트를 내 업무에 맞게 바꿔 바로 써 보세요.</div>
         <div class="quote">“${esc(cs.quote)}”<small>${esc(cs.who.split(' · ')[0])} 담당자 · 예시 인용</small></div></div>
     </div>
   </div>`;
@@ -946,7 +946,7 @@ function rCase(m,c){
 
 function rOutro(m,c){
   main.innerHTML=`<div class="outro"><div class="eyebrow">${m.agent} · MISSION ${m.no}</div><h2>MISSION COMPLETE</h2>
-    <p>${esc(m.cs.no)} 포켓 카드를 Debriefing Desk에서 받으세요</p><div class="cd" id="cd">다음 요원을 기다립니다 · 5</div></div>`;
+    <p>${esc(m.cs.no)} 기밀 해제 완료 · 자리로 돌아가 같은 지시를 Copilot에 입력해 보세요</p><div class="cd" id="cd">다음 요원을 기다립니다 · 5</div></div>`;
   for(let k=1;k<=5;k++)c.at(k*1000,()=>{const e=$('#cd');if(e)e.textContent='다음 요원을 기다립니다 · '+Math.max(0,5-k)});
 }
 
