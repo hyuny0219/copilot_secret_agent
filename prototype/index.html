@@ -840,9 +840,9 @@ const shim=t=>`<span class="shim">${esc(t)}</span>`;
 /* ===================== AUDIO ===================== */
 const NARR='안녕하십니까 Copilot Secret Agent에 오신걸 환영합니다. 당신은 지금부터 삼성화재 곳곳에 비밀리에 활동하는 Copilot Agent를 활용하여 주어진 미션을 수행해야 합니다. 미션을 선택하시길 바랍니다.';
 const NARR_TTS='안녕하십니까. 코파일럿 시크릿 에이전트에 오신 것을 환영합니다. 당신은 지금부터, 삼성화재 곳곳에 비밀리에 활동하는 코파일럿 에이전트를 활용하여, 주어진 미션을 수행해야 합니다. 미션을 선택하시길 바랍니다.';
-/* 녹음 파일이 있으면 우선 사용: assets/voice-intro.mp3, assets/bgm-m1.mp3 · bgm-m2.mp3 · bgm-m3.mp3 */
+/* 녹음 파일이 있으면 우선 사용: assets/voice-intro.wav(또는 .mp3), assets/bgm-m1.mp3 · bgm-m2.mp3 · bgm-m3.mp3 */
 const AVAIL={};
-['assets/voice-intro.mp3','assets/bgm-m1.mp3','assets/bgm-m2.mp3','assets/bgm-m3.mp3'].forEach(f=>{try{const a=new Audio();a.preload='metadata';a.addEventListener('loadedmetadata',()=>{AVAIL[f]=true},{once:true});a.addEventListener('error',()=>{},{once:true});a.src=f}catch(e){}});
+['assets/voice-intro.wav','assets/voice-intro.mp3','assets/bgm-m1.mp3','assets/bgm-m2.mp3','assets/bgm-m3.mp3'].forEach(f=>{try{const a=new Audio();a.preload='metadata';a.addEventListener('loadedmetadata',()=>{AVAIL[f]=true},{once:true});a.addEventListener('error',()=>{},{once:true});a.src=f}catch(e){}});
 const AU={ctx:null,out:null,dly:null,noise:null,on:true,track:null,voice:null};
 try{if(localStorage.getItem('dsSound')==='off')AU.on=false}catch(e){}
 function auInit(){
@@ -957,7 +957,7 @@ function txType(text,dur){clearInterval(txTimer);let i=0;const n=text.length,ste
 const MALE_RE=/InJoon|Hyunsu|BongJin|GookMin|Seoyeon-?Male|\bMale\b|남성/i;
 function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^ko/i.test(v.lang));
   return vs.find(v=>MALE_RE.test(v.name)&&/Natural|Online|Neural/i.test(v.name))||vs.find(v=>MALE_RE.test(v.name))||null}catch(e){return null}}
-function voiceLabel(){if(AVAIL['assets/voice-intro.mp3'])return '음성: 녹음 파일';const v=pickVoice();return v?'음성: '+v.name.replace(/Microsoft |Online |\(Natural\)| - .*/g,'').trim()+' (남성)':'음성: 남성 음성 없음 · Edge 권장'}
+function voiceLabel(){if(AVAIL['assets/voice-intro.wav']||AVAIL['assets/voice-intro.mp3'])return '음성: 녹음 파일 (voice-intro)';const v=pickVoice();return v?'음성: '+v.name.replace(/Microsoft |Online |\(Natural\)| - .*/g,'').trim()+' (남성)':'음성: 남성 음성 없음 · Edge 권장'}
 function showVoice(){const e=$('#vstat');if(e)e.textContent=voiceLabel()}
 try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{speechSynthesis.getVoices();showVoice()}}catch(e){}
 function stopNarration(){clearInterval(txTimer);try{speechSynthesis.cancel()}catch(e){}if(AU.voice){AU.voice.pause();AU.voice=null}const b=$('.tx');if(b)b.classList.remove('speaking')}
@@ -965,7 +965,10 @@ function narrate(){
   stopNarration();const box=$('.tx');if(box)box.classList.add('speaking');txType(NARR,14500);
   const done=()=>{const b=$('.tx');if(b)b.classList.remove('speaking')};
   if(!AU.on){setTimeout(done,14500);return}
-  if(AVAIL['assets/voice-intro.mp3']){const a=new Audio('assets/voice-intro.mp3');AU.voice=a;a.onended=done;a.play().catch(()=>speak(done));return}
+  const vf=AVAIL['assets/voice-intro.wav']?'assets/voice-intro.wav':AVAIL['assets/voice-intro.mp3']?'assets/voice-intro.mp3':null;
+  if(vf){const a=new Audio(vf);AU.voice=a;a.onended=done;
+    a.addEventListener('loadedmetadata',()=>{if(isFinite(a.duration))txType(NARR,a.duration*1000*.92)},{once:true});
+    a.play().catch(()=>speak(done));return}
   speak(done);
 }
 function speak(done){

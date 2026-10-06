@@ -13,7 +13,7 @@
 
 | 파일명 | 용도 |
 |---|---|
-| `voice-intro.mp3` | START 후 본부 지령 음성 (중저음 남성 성우 녹음 권장) |
+| `voice-intro.wav` 또는 `voice-intro.mp3` | START 후 본부 지령 음성 (현재 `voice-intro.wav` 적용됨) |
 | `bgm-m1.mp3` | 미션 01 투자운영파트 BGM (반복 재생) |
 | `bgm-m2.mp3` | 미션 02 글로벌U/W기획 BGM (반복 재생) |
 | `bgm-m3.mp3` | 미션 03 기획파트 BGM (반복 재생) |
