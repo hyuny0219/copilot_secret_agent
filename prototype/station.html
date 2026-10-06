@@ -1,8 +1,15 @@
 <title>Declassify Station 시안</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Nanum+Pen+Script&display=swap">
 <style>
+/* 오프라인 글꼴: 시안에 쓰인 글자만 담은 로컬 파일 (assets/fonts). 문구를 바꾸면 글꼴을 다시 생성해야 합니다. */
+@font-face{font-family:'Big Shoulders Stencil Display';font-style:normal;font-weight:600;font-display:swap;src:url('assets/fonts/big-shoulders-stencil-display-600.woff2') format('woff2')}
+@font-face{font-family:'Big Shoulders Stencil Display';font-style:normal;font-weight:800;font-display:swap;src:url('assets/fonts/big-shoulders-stencil-display-800.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/ibm-plex-mono-400.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url('assets/fonts/ibm-plex-mono-600.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Sans KR';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/ibm-plex-sans-kr-400.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Sans KR';font-style:normal;font-weight:500;font-display:swap;src:url('assets/fonts/ibm-plex-sans-kr-500.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Sans KR';font-style:normal;font-weight:700;font-display:swap;src:url('assets/fonts/ibm-plex-sans-kr-700.woff2') format('woff2')}
+@font-face{font-family:'Nanum Pen Script';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/nanum-pen-script-400.woff2') format('woff2')}
+
 /* Layout: one 1600x900 kiosk canvas scaled to fit the viewport, review controls and flow notes beneath.
    Dark agency HQ frame around light office work screens; one agent color per mission. Single committed dark look. */
 :root{
@@ -31,6 +38,11 @@ button{font:inherit;color:inherit}
 .page-head p{margin:.35rem 0 0;color:var(--mute);font-size:.92rem;max-width:62ch}
 .tag-proto{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;color:var(--hit);border:1px solid var(--hit);padding:3px 8px;border-radius:2px;white-space:nowrap}
 
+.kiosk-toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:100;background:rgba(20,25,32,.92);border:1px solid var(--line);color:var(--text);font-size:14px;padding:8px 16px;border-radius:20px;opacity:0;transition:opacity .4s;pointer-events:none}
+.kiosk-toast.on{opacity:1}
+body.kiosk{padding:0;overflow:hidden;background:#000}
+body.kiosk .page>*:not(.stage-wrap){display:none!important}
+body.kiosk .stage-wrap{position:fixed;inset:0;width:100vw;height:100vh;max-width:none;aspect-ratio:auto;border:0;margin:0}
 .stage-wrap{position:relative;width:100%;max-width:min(1600px, calc((100dvh - 190px) * 16 / 9));min-width:0;margin-inline:auto;aspect-ratio:16/9;border:1px solid var(--line);background:#000;overflow:hidden}
 .stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;transform:scale(var(--s,0.5));background:var(--hq);overflow:hidden;font-size:16px}
 
@@ -411,6 +423,8 @@ button{font:inherit;color:inherit}
 .ghint.left b{left:0;transform:none}
 .ghint.inside b{top:auto;bottom:18px}
 .ghint.leftof b{top:50%;left:auto;right:calc(100% + 18px);transform:translateY(-50%)}
+.ghint.far b{top:50%;left:auto;right:calc(100% + 420px);transform:translateY(-50%)}
+.ghint.far::after{content:"";position:absolute;top:50%;right:calc(100% + 10px);width:410px;border-top:2px dashed rgba(255,255,255,.85)}
 @keyframes gIn{from{opacity:0}}
 @keyframes gPulse{50%{opacity:.3}}
 .stage.gated .seg.active i::after{animation-play-state:paused}
@@ -460,6 +474,7 @@ button{font:inherit;color:inherit}
       <button class="btn" id="bnext">다음 단계</button>
       <button class="btn" id="bhome">처음 화면</button>
       <button class="btn on" id="bsound">소리: 켜짐</button>
+      <button class="btn" id="bkiosk" title="검토용 버튼과 설명을 숨기고 전시 화면만 전체 화면으로 띄웁니다">현장 모드</button>
       <button class="btn" id="bfull">전체 화면</button>
       <span class="readout" id="readout">대기 화면</span>
       <span class="readout" id="vstat"></span>
@@ -467,7 +482,7 @@ button{font:inherit;color:inherit}
   </div>
 
   <section class="notes" id="notes"></section>
-  <p class="kiosk"><b>시작:</b> 시작 화면에서 <b>START</b>(또는 Space·Enter)를 누르면 본부 음성 지령과 함께 미션 카드 3장이 나타나고, 미션을 고르면 미션별 BGM이 재생됩니다. 소리는 아래 <b>소리</b> 버튼으로 끌 수 있습니다. <b>진행 방식:</b> <b>클릭 진행</b>에서는 Copilot 호출, 요청 전송, 근거 확인, 검토 표시, 승인 도장 순간에 화면이 멈추고 누를 곳이 강조됩니다. 그 부분을 직접 누르거나 <b>Enter</b>·<b>→</b>·프레젠터 리모컨으로 다음 단계로 넘어갑니다. <b>자동 재생</b>은 무인 키오스크용으로 카드 1장만 뽑으면 끝까지 재생됩니다. 위의 이전·다음·일시정지 버튼은 시안 검토용이며 키보드 <b>1·2·3</b>(미션 선택), <b>Space</b>(무작위 미션 / 일시정지), <b>← →</b>(단계 이동)로도 조작할 수 있습니다. 화면 속 회사명, 인물, 수치는 모두 가상 데이터이며 실제 사례가 확정되면 교체합니다.</p>
+  <p class="kiosk"><b>현장 모드:</b> <b>현장 모드</b> 버튼(또는 K 키, 주소 끝에 <b>#kiosk</b>)을 누르면 검토용 요소를 숨기고 전시 화면만 전체 화면으로 띄웁니다. 다시 K 키로 해제합니다. <b>시작:</b> 시작 화면에서 <b>START</b>(또는 Space·Enter)를 누르면 본부 음성 지령과 함께 미션 카드 3장이 나타나고, 미션을 고르면 미션별 BGM이 재생됩니다. 소리는 아래 <b>소리</b> 버튼으로 끌 수 있습니다. <b>진행 방식:</b> <b>클릭 진행</b>에서는 Copilot 호출, 요청 전송, 근거 확인, 검토 표시, 승인 도장 순간에 화면이 멈추고 누를 곳이 강조됩니다. 그 부분을 직접 누르거나 <b>Enter</b>·<b>→</b>·프레젠터 리모컨으로 다음 단계로 넘어갑니다. <b>자동 재생</b>은 무인 키오스크용으로 카드 1장만 뽑으면 끝까지 재생됩니다. 위의 이전·다음·일시정지 버튼은 시안 검토용이며 키보드 <b>1·2·3</b>(미션 선택), <b>Space</b>(무작위 미션 / 일시정지), <b>← →</b>(단계 이동)로도 조작할 수 있습니다. 화면 속 회사명, 인물, 수치는 모두 가상 데이터이며 실제 사례가 확정되면 교체합니다.</p>
 </div>
 
 <script>
@@ -702,7 +717,15 @@ const st={screen:'title',mi:-1,phase:-1,playing:false,starts:[],scale:.5,interac
 try{if(localStorage.getItem('dsMode')==='auto')st.interactive=false}catch(e){}
 const pdur=p=>st.interactive&&p.idur?p.idur:p.dur;
 
-function fit(){const w=wrap.clientWidth;st.scale=w/1600;stage.style.setProperty('--s',st.scale)}
+function fit(){const W=wrap.clientWidth,H=wrap.clientHeight||W*9/16,k=Math.min(W/1600,H/900);st.scale=k;stage.style.setProperty('--s',k);
+  stage.style.left=Math.max(0,(W-1600*k)/2)+'px';stage.style.top=Math.max(0,(H-900*k)/2)+'px'}
+function toast(t){let e=$('#ktoast');if(!e){e=document.createElement('div');e.id='ktoast';e.className='kiosk-toast';document.body.appendChild(e)}
+  e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),3500)}
+function setKiosk(on){document.body.classList.toggle('kiosk',on);try{localStorage.setItem('dsKiosk',on?'1':'0')}catch(e){}
+  if(on){try{const r=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();if(r&&r.catch)r.catch(()=>{})}catch(e){}
+    toast('현장 모드 · 해제: K 키 (전체 화면 해제: Esc)')}
+  else{try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}}
+  setTimeout(fit,60)}
 new ResizeObserver(fit).observe(wrap);fit();
 
 function buildProg(){
@@ -1070,7 +1093,7 @@ function rCall(m,c){
   const send=()=>{const p=$('#ptext');p.textContent='Copilot에게 메시지 보내기';p.className='ph';
     $('#pinput').classList.remove('focus');$('#psend').classList.remove('ready','press');$('#pfiles').classList.remove('on');
     $('#phello').classList.add('gone');$('#pbubble').innerHTML=marked(m);$('#puser').classList.add('on')};
-  if(I)c.gate(B+9700,'#psend','눌러서 Copilot에 요청 보내기',()=>{$('#psend').classList.add('press');setTimeout(send,200)},'leftof');
+  if(I)c.gate(B+9700,'#psend','눌러서 Copilot에 요청 보내기',()=>{$('#psend').classList.add('press');setTimeout(send,200)},'far');
   else{c.at(B+10100,()=>$('#psend').classList.add('press'));c.at(B+10400,send)}
   c.at(B+11100,()=>{$('#pbot').classList.add('on');$('#pstatus').innerHTML=shim(`자료 ${m.files.length}건을 읽는 중…`)});
 }
@@ -1170,10 +1193,14 @@ $('#bnext').addEventListener('click',()=>jump(1));
 $('#bpause').addEventListener('click',togglePause);
 $('#bhome').addEventListener('click',goIdle);
 $('#bsound').addEventListener('click',()=>setSound(!AU.on));setSound(AU.on);setTimeout(showVoice,800);
+$('#bkiosk').addEventListener('click',()=>setKiosk(true));
+(function(){let k=false;try{k=/kiosk/i.test(location.hash+location.search)||localStorage.getItem('dsKiosk')==='1'}catch(e){}if(k)setKiosk(true)})();
+window.addEventListener('resize',fit);
 $('#bfull').addEventListener('click',()=>{try{const p=wrap.requestFullscreen&&wrap.requestFullscreen();if(p&&p.catch)p.catch(()=>{})}catch(e){}});
 document.addEventListener('fullscreenchange',fit);
 document.addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea'))return;
+  if(e.key==='k'||e.key==='K'){setKiosk(!document.body.classList.contains('kiosk'));return}
   if(!st.playing&&st.screen==='title'&&(e.key===' '||e.key==='Enter')){e.preventDefault();startIntro();return}
   if(['1','2','3'].includes(e.key)&&!st.playing){pick(+e.key-1);return}
   if(e.key===' '){e.preventDefault();if(st.playing)togglePause();else pick(Math.floor(Math.random()*3));return}
