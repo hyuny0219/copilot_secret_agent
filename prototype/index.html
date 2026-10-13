@@ -447,6 +447,21 @@ body.kiosk .stage-wrap{position:fixed;inset:0;width:100vw;height:100vh;max-width
 .t2f .form-title{font-size:22px;letter-spacing:.3em}
 .t2f .f th{width:104px}
 .t2f .f td,.t2f .f th{height:31px;font-size:13px}
+/* ---------- mission 3: new product ---------- */
+.t3-q{font-size:13px;background:#F4F1EA;padding:7px 9px;display:flex;gap:8px;align-items:center}.t3-q em{font-style:normal;color:#B42318;font-weight:600;margin-left:auto}
+.t3r{position:absolute;inset:0;background:#E9ECF2;padding:14px 18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr) minmax(0,1fr);gap:12px}
+.t3c{background:#fff;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:7px;box-shadow:0 4px 12px rgba(16,28,61,.12);overflow:hidden;font-size:12.5px;line-height:1.5;color:#3B424C}
+.t3c h4{margin:0;font-size:12px;letter-spacing:.06em;color:#1B4F9C;border-bottom:2px solid #101C3D;padding-bottom:4px}
+.t3c p{margin:0}.t3c p b{color:#101C3D}.t3c em{font-style:normal;color:#B42318;font-weight:600}
+.t3c ol{margin:0;padding-left:1.3rem}
+.t3c sup{font-size:10px;color:#9A5B00;background:#FFF4D6;padding:0 4px}
+.t3t{font-size:15px;font-weight:700;color:#101C3D}
+.t3warn{font-size:11.5px;color:#B42318;background:#FDECEC;padding:4px 8px}
+.t3tb,.t3tr{width:100%;border-collapse:collapse}
+.t3tb th,.t3tb td{border:1px solid #DCE1E7;padding:5px 7px;text-align:left;vertical-align:top}
+.t3tb th{background:#F1F4F9;width:84px;font-weight:500;color:#101C3D;white-space:nowrap}
+.t3tr{font-size:11.5px}.t3tr th,.t3tr td{border-bottom:1px solid #E1E6F0;padding:5px 4px;text-align:left}.t3tr th{background:#F1F4F9;font-weight:500;color:#101C3D}
+.t3side{gap:14px}.t3side>div{display:flex;flex-direction:column;gap:7px}
 /* ---------- mission 2 form ---------- */
 .form{position:absolute;inset:0;background:#fff;padding:20px 34px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
 .form-title{font-size:26px;font-weight:700;text-align:center;letter-spacing:.4em;padding-bottom:6px;border-bottom:3px double var(--ink)}
@@ -731,34 +746,52 @@ function m2Result(){
 }
 
 function m3Blank(){
-  return `<div class="browser">
-    <div class="url">◀ ▶ ↻ <span id="t-url">https://www.oo-global.example/investors</span></div>
-    <div class="site">
-      <div class="s-nav"><b class="s-logo">OO GLOBAL<span>INSURANCE GROUP</span></b><nav><span>About us</span><span>Products</span><u>Investors</u><span>Newsroom</span><span>Sustainability</span><span>Careers</span></nav></div>
-      <div class="s-hero"><h3>Investor Relations</h3><p>Results, reports and presentations for shareholders and analysts.</p></div>
-      <div class="s-tiles">
-        <a id="t-ar">Annual Report 2025<small>PDF · 312 pages</small></a>
-        <a id="t-h1">H1 2026 Results<small>Presentation · 64 pages</small></a>
-        <a id="t-fs">Financial Supplement<small>XLSX · 14 sheets</small></a>
-        <a id="t-sfcr">Solvency &amp; Financial Condition Report<small>PDF · 180 pages</small></a>
-        <a>Webcast replay<small>Video · 82 min</small></a>
-        <a>Credit ratings<small>4 agencies</small></a>
-        <a>Shareholder letter<small>PDF · 12 pages</small></a>
-        <a>Dividend history<small>Table</small></a>
-      </div>
-      <div class="s-news" id="t-news"><b>Latest news</b><span>12 Aug 2026 · OO Global reports H1 2026 results</span><span>28 Jul 2026 · Update on reinsurance programme renewal</span><span>03 Jun 2026 · Capital markets day presentation available</span></div>
+  return `
+  <div class="tabs"><span class="tab on">웹 검색 · 경쟁사 특약 동향</span><span class="tab">SharePoint · 자동차보험 약관</span><span class="tab">SharePoint · 특약개발 상품안</span><span class="tab">신상품_상품안_신규.docx</span></div>
+  <div class="t2 t3">
+    <div class="t2-db" id="t3-web"><small>WEB · 경쟁사 · 업계 동향 (예시)</small>
+      <div class="trip"><i>A손보</i><b>교통사고 한방치료비 지원 특약 출시</b><span>보험 전문지 · 2026.09</span></div>
+      <div class="trip"><i>B손보</i><b>자동차사고 후유 재활 지원 특약 개정</b><span>상품 공시 · 2026.08</span></div>
+      <div class="trip"><i>업계</i><b>자동차사고 후 장기 재활 수요 증가</b><span>업계 리포트 · 2026.07</span></div>
+      <div class="trip"><i>C손보</i><b>자동차상해 보장 확대형 상품 출시</b><span>경제 일간지 · 2026.06</span></div>
+      <div class="trip"><i>협회</i><b>자동차보험 특약 운영 현황 공시</b><span>협회 공시 · 2026.06</span></div>
     </div>
+    <div class="t2-net" id="t3-terms"><small>SHAREPOINT · 당사 자동차보험 약관</small>
+      <div class="t3-q">조문 검색 <b>"재활치료"</b> <em>직접 보장 조문 0건</em></div>
+      <div class="t2-task"><b>약관</b>자기신체사고 · 자동차상해 특별약관</div>
+      <div class="t2-task"><b>약관</b>상급병실료지원 특별약관</div>
+      <div class="t2-task"><b>약관</b>성형·치아보철 비용지원 특별약관</div>
+      <div class="t2-task"><b>약관</b>자동차보험 특별약관 공통 조항</div>
+      <div class="t2-task"><b class="h">법무</b>면책 조항 법률검토 의견 모음</div>
+    </div>
+    <div class="t2-news" id="t3-plan"><small>SHAREPOINT · 기존 특약개발 상품안</small>
+      <b>상품안 양식</b><span>개발 취지 · 상품(안) · 도입효과</span>
+      <b>상품(안) 항목</b><span>가입조건 · 보상하는 비용 · 지급기준 · 보상한도 · 자기부담금 · 면책</span>
+      <b>약관 작성 원칙</b><span>당사 원문 우선 · 임의 작성 시 출처 표시</span>
+    </div>
+    <div class="t2-form" id="t3-form"><small>신상품 개발 · 새 문서</small>
+      <div class="t2-blank"><span>아이디어 <i></i></span><span>상품(안) <i></i></span><span>특별약관 초안 <i></i></span><span>문구 추적표 <i></i></span><span>검토의견 <i></i></span></div></div>
   </div>`;
 }
 function m3Result(){
-  const rows=[['총보험료 (GWP)','48,200','+6.1%','25,600','+5.4%'],['영업이익','5,840','+9.4%','3,120','+7.2%'],['순이익','3,910','+12.3%','2,140','+8.7%'],['합산비율','93.8%','-1.2%p','92.9%','-0.8%p'],['지급여력비율 (Solvency II)','201%','+7%p','205%','+4%p']];
-  return `<div class="doc">
-    <div class="dh" data-g><small>기획파트 · 해외 보험사 벤치마킹 브리핑 · 초안 v1</small><h2>OO Global Insurance 실적 요약 (2025 연간 · 2026 상반기)</h2></div>
-    <section data-g id="r3-table" style="padding:0;border:0"><table class="bench"><tr><th>지표</th><th>2025 연간</th><th>YoY</th><th>2026 상반기</th><th>YoY</th></tr>
-      ${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="up">${r[2]}</td><td>${r[3]}</td><td class="up">${r[4]}</td></tr>`).join('')}
-    </table><p class="ex" style="margin-top:6px">단위: USD m · 가상 데이터</p></section>
-    <section data-g><h4>시사점</h4><ol><li>손해율 개선으로 합산비율 2년 연속 하락<sup>[1] p.18</sup></li><li>재보험 비용 상승분을 요율 인상으로 상쇄<sup>[2] p.7</sup></li><li>아시아 지역 보험료 +11%로 성장 견인<sup>[2] p.9</sup></li></ol></section>
-    <section data-g id="r3-src"><h4>출처</h4><div class="src"><span>[1] Annual Report 2025, p.14–22</span><span>[2] H1 2026 Results Presentation, p.5–9</span><span>[3] Solvency &amp; Financial Condition Report 2025, p.31</span></div></section>
+  const plan=[['특약명','교통사고 재활치료비 지원 특별약관'],['가입조건','자기신체사고 또는 자동차상해 가입 계약'],['보상하는 비용','자동차사고 상해 후 의사 소견에 따른 재활치료비'],['지급기준','실제 지출 비용 · 가입금액 한도'],['보상한도','100만 / 300만 / 500만 원 선택'],['자기부담금','(검토 필요)'],['증빙서류','진단서 · 치료확인서 · 진료비 영수증']];
+  const tr=[['적용대상','원문 준용','상급병실료지원','없음'],['피보험자','원문 구조','자동차상해','없음'],['준용규정','원문 그대로','특별약관 공통','없음'],['보상내용','<em>임의 작성</em>','해당 원문 없음','신규 작성'],['면책사항','원문 조합','자동차상해 · 상급병실료','법무 검토'],['재활치료 정의','<em>임의 작성</em>','확인 필요','약관 정합성']];
+  return `<div class="t3r">
+    <div class="t3c" data-g id="r3-idea"><h4>아이디어</h4><div class="t3t">「교통사고 재활치료비 지원 특별약관」</div>
+      <p><b>개발 취지</b> 자동차사고 후 장기 재활치료가 필요한 고객의 실제 치료비 부담을 보장해 자손·자상 보장 공백을 보완</p>
+      <table class="t3tb">${plan.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table></div>
+    <div class="t3c" data-g id="r3-draft"><h4>특별약관 초안</h4><div class="t3warn">중요: 실제 조문은 당사 원문 확인 없이 임의 확정 불가</div>
+      <div class="t3t">[가칭] 교통사고 재활치료비 지원 특별약관</div>
+      <p><b>1. 적용대상</b> 「자기신체사고」 또는 「자동차상해 특별약관」에 가입한 경우 적용 <sup>상급병실료지원 구조 준용</sup></p>
+      <div id="r3-comp"><p><b>2. 보상내용</b> <em>[임의 작성]</em> 의사의 소견에 따라 실시한 재활치료 비용을 가입금액 한도 내 지급</p>
+      <ol><li>물리치료비</li><li>작업치료비</li><li>운동치료비</li><li>의사가 필요하다고 인정한 재활프로그램 비용</li></ol></div>
+      <p><b>3. 보험금을 지급하지 않는 경우</b> 의사 소견 없는 재활치료, 미용·건강증진 목적 치료 등</p>
+      <p><b>4. 피보험자</b> 자기신체사고 또는 자동차상해 특별약관의 피보험자</p>
+      <p><b>5. 준용규정</b> 정하지 않은 사항은 보통약관 및 자동차상해 특별약관을 따름</p></div>
+    <div class="t3c t3side"><div data-g id="r3-trace"><h4>문구 추적표</h4>
+      <table class="t3tr"><tr><th>작성 조항</th><th>반영 구분</th><th>당사 출처</th><th>검토</th></tr>${tr.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')}</table></div>
+      <div data-g id="r3-op"><h4>검토의견</h4><p>운영 중인 「상급병실료지원」·「성형·치아보철 비용지원」 특약과 같은 '자동차사고 추가 치료비 보장' 범주로 <b>사업화 가능성이 높습니다.</b></p>
+      <p>다만 재활치료비를 직접 보장하는 기존 조문이 없어 <b>핵심 보상조항은 임의 작성</b>했습니다. 당사 약관 원문 추가 확인이 필요합니다.</p></div></div>
   </div>`;
 }
 
@@ -826,33 +859,35 @@ const MISSIONS=[
       bl:'출장 품의 작성', before:60, after:10, unit:'분', extra:'과거 출장·네트워크를 근거로 만날 사람까지 추천',
       tools:'Microsoft 365 Copilot 에이전트 만들기 · OneDrive 지식', apply:['해외 출장자 전원','영업','제휴·파트너십','대외협력']}
 },
-{ key:'m3', no:'03', dept:'기획파트', agent:'AGENT RED', emb:'R', color:'#E5484D',
+{ key:'m3', no:'03', dept:'자동차보험상품파트', agent:'AGENT RED', emb:'R', color:'#E5484D',
   cardLines:['--w:84%','--w:66%','--w:90%'],
-  title:'정보 확보: 해외 보험사',
-  directive:'글로벌 OO보험사의 실적 정보가 필요해요. 빠르게 확보할 수 있죠?',
-  limit:'오늘 오후 보고', clearance:'L3 · INTEL',
-  sideTitle:'TARGET: OO GLOBAL', sideText:'목표는 해외 보험사 홈페이지. 영문 보고서는 수백 페이지이고, 비교표는 처음부터 직접 만들어야 합니다.',
-  winTitle:'OO Global Insurance · Investors', winApp:'Browser', resTitle:'해외보험사_실적브리핑_OOGlobal.docx', resApp:'Word',
+  title:'불가능한 미션: 신상품 개발',
+  directive:'1가지 의뢰가 들어왔어요, Agent. 경쟁사와 시장의 동향을 파악하여 난해한 상품개발까지.. 불가능한 미션이지만 할 수 있죠?',
+  limit:'오늘 중', clearance:'L3 · IMPOSSIBLE',
+  sideTitle:'TARGET: NEW PRODUCT', sideText:'경쟁사는 벌써 새 특약을 냈습니다. 시장조사, 상품안, 약관 초안까지 — 근거는 수십 개 문서에 흩어져 있습니다.',
+  winTitle:'신상품 개발 · 시장조사 · 약관 · 상품안', winApp:'', resTitle:'신상품 개발안_교통사고 재활치료비 지원 특별약관 (초안)', resApp:'',
   blank:m3Blank, result:m3Result,
-  pain:{h:'자료는 많은데, 어디에 있지?',l:['연차보고서 312p · 실적 발표 64p','영문 · USD · IFRS 17 기준','비교표는 처음부터 직접 작성']},
-  cursor:[[380,150],[960,390],[560,470],[1240,560]], btn:[1452,738],
-  files:[['WEB','oo-global.example/investors','IR 페이지','web'],['E-01','Annual Report 2025.pdf','312p','pdf'],['E-02','H1 2026 Results.pdf','64p','pdf']],
-  sugg:['해외 보험사 최신 뉴스','실적 비교표 만들기','IR 자료 요약'],web:true,
-  greet:'요원, 목표 확인. 공개된 IR 자료에서 실적을 확보하겠습니다. 어떤 지표가 필요합니까?',
-  prompt:'OO Global Insurance의 최근 실적을 정리해줘. 2025년 연간과 2026년 상반기 기준 총보험료, 영업이익, 순이익, 합산비율, 지급여력비율을 표로 만들고 전년 대비 증감을 계산해줘. 시사점 3개와 출처 링크도 달아줘.',
-  keywords:['최근 실적','2025년 연간과 2026년 상반기','표로','전년 대비 증감','시사점 3개','출처 링크'],
+  pain:{h:'아이디어부터 약관까지 수작업',l:['경쟁사 상품·업계 동향을 하나씩 수기 조회','유사 특약·기존 약관을 수십 개 문서에서 검색','약관 문구는 법률검토 내용까지 찾아 참고']},
+  cursor:[[300,260],[700,240],[1240,260],[900,640]], btn:[1452,738],
+  copilotAgent:'자동차보험 신상품 개발 에이전트',
+  files:[['E-01','당사 자동차보험 약관','SharePoint','pdf'],['E-02','기존 특약개발 상품안','SharePoint','docx'],['WEB','경쟁사·업계 동향','웹 검색','web']],
+  sugg:['경쟁사 신상품 동향','특약 아이디어 추천','약관 초안 작성'],
+  greet:'요원, 의뢰 접수. 당사 약관과 기존 상품안을 확인했습니다. 어떤 상품 컨셉으로 개발할까요?',
+  prompt:'자손 관련 보장성특약 만들어줘',
+  keywords:['자손 관련','보장성특약'],
+  steal:'자손 관련 보장성특약 만들어줘',
   steps:[
-    {t:'웹 검색 · IR 페이지 탐색',d:'실적 발표 보도자료 · 보고서 3건 확인',g:'WEB · 3건',sel:'#t-url'},
-    {t:'Annual Report 312p 분석',d:'2025 연간 보험료 · 이익 · 합산비율 추출',g:'E-01 p.14–22',sel:'#t-ar'},
-    {t:'상반기 실적 비교',d:'2026 상반기 지표 · 전년 대비 증감 계산',g:'E-02 p.5–9',sel:'#t-h1'},
-    {t:'지급여력비율 확인',d:'Solvency II 비율 201% 확인',g:'E-03 p.31',sel:'#t-sfcr'}],
-  doneMsg:'브리핑 생성 완료 · 출처 3건 연결',
-  checks:[{sel:'#r3-table',note:'단위 USD m 명시 확인 ✓',dx:600,dy:248},{sel:'#r3-src',note:'IFRS 17 기준 주석 추가',dx:420,dy:-26}],
-  stamp:'기획파트 검토 완료',
-  cs:{no:'CASE #003', title:'해외 보험사 실적 벤치마킹', who:'기획파트 · 경영 벤치마킹 담당',
-      flow:['영문 보고서 수백 페이지에서 지표 수집 반나절','공개 IR 페이지, 연차보고서, 실적 발표 자료','웹 검색으로 지표 5개 추출과 증감 계산, 출처 표기를 지시','출처가 달린 실적 비교 브리핑','20분 만에 확보, 분기마다 같은 지시 재사용'],
-      bl:'자료 확보', before:240, after:20, unit:'분', extra:'분기 벤치마킹 3개사 → 8개사',
-      quote:'분기마다 같은 지시로 비교표를 다시 받습니다', tools:'Microsoft 365 Copilot Chat (웹 검색) · Excel', apply:['경영기획','IR','상품개발','리스크관리']}
+    {t:'시장·업계 조사',d:'경쟁사 유사 특약 · 업계 동향 5건 수집',g:'WEB 검색',sel:'#t3-web'},
+    {t:'당사 약관 검색',d:'유사 특약 2종 확인 · 재활치료 직접 보장 조문 0건',g:'E-01 SharePoint 약관',sel:'#t3-terms'},
+    {t:'상품안 작성',d:'기존 상품안 양식에 맞춰 가입조건·보상구조 구성',g:'E-02 SharePoint 상품안',sel:'#t3-plan'},
+    {t:'약관 문구 작성 · 검토의견',d:'특별약관 초안 · 문구 추적표 · 검토의견 생성',g:'약관 초안',sel:'#t3-form'}],
+  doneMsg:'상품안 · 특별약관 초안 · 문구 추적표 · 검토의견 완료',
+  checks:[{sel:'#r3-comp',note:'임의 작성 조항 → 당사 약관 원문 확인',dx:-10,dy:268},{sel:'#r3-trace',note:'면책 법무 검토 · 약관 정합성 확인',dx:-10,dy:462}],
+  stamp:'검토 완료',
+  cs:{no:'CASE #003', title:'자동차보험 신상품 개발 지원', who:'자동차보험상품파트',
+      flow:['시장조사·상품안·약관 초안 작성에 장시간, 핵심 기획 집중도 저하','당사 자동차보험 약관, 기존 특약개발 상품안(SharePoint), 경쟁사·업계 동향(웹)','상품 컨셉 입력 → 시장조사 → 상품안 양식 작성 → 당사 약관 참고 약관 작성','상품안 · 특별약관 초안 · 문구 추적표 · 검토의견','신상품 초안 5일 → 1일, 기획 업무에 집중'],
+      bl:'신상품 초안 작성', before:5, after:1, unit:'일', bLabel:'5일', aLabel:'1일', extra:'약관 문구마다 당사 원문 참고 여부를 추적표로 기재',
+      tools:'Microsoft 365 Copilot 에이전트 만들기 · SharePoint 지식', apply:['장기보험 상품개발','일반보험 상품개발','약관 관리','상품 심사']}
 }];
 
 /* ===================== PHASES ===================== */
@@ -1354,10 +1389,10 @@ function rOutro(m,c){
 
 /* ===================== NOTES (below stage) ===================== */
 $('#notes').innerHTML=MISSIONS.map(m=>`<div class="note" style="--c:${m.color}"><div class="who">MISSION ${m.no} · ${m.agent}</div><h3>${esc(m.dept)} · ${esc(m.title)}</h3>
-  <ol><li>시작 화면: ${m.key==='m1'?'보험·금융 기사와 통계가 쌓인 자료함 + 빈 카드뉴스 5칸':m.key==='m2'?'과거 출장 결과보고서·네트워크 DB·협업 현황 + 빈 품의서 + 10분 카운트다운':'해외 보험사 IR 홈페이지'}</li>
+  <ol><li>시작 화면: ${m.key==='m1'?'보험·금융 기사와 통계가 쌓인 자료함 + 빈 카드뉴스 5칸':m.key==='m2'?'과거 출장 결과보고서·네트워크 DB·협업 현황 + 빈 품의서 + 10분 카운트다운':'경쟁사 동향·당사 약관·기존 상품안 + 빈 신상품 개발 문서'}</li>
   <li>Copilot 호출 → 데이터 ${m.files.length}건 첨부 → 프롬프트 입력·전송</li>
   <li>처리 4단계: 화면 위 근거 위치를 하나씩 표시</li>
-  <li>결과물: ${m.key==='m1'?'NAVY INSIGHT 스타일 카드뉴스 5장':m.key==='m2'?'핵심 추천 미팅·권고 3일 구조(출장 사전 PACK) + 출장 품의서':'출처가 달린 실적 비교 브리핑'}</li>
+  <li>결과물: ${m.key==='m1'?'NAVY INSIGHT 스타일 카드뉴스 5장':m.key==='m2'?'핵심 추천 미팅·권고 3일 구조(출장 사전 PACK) + 출장 품의서':'상품안 · 특별약관 초안 · 문구 추적표 · 검토의견'}</li>
   <li>사람 검토(빨간 펜) → ${esc(m.cs.no)} 실제 사례 공개</li></ol></div>`).join('');
 
 /* ===================== WIRING ===================== */
