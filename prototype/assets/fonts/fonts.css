@@ -1,0 +1,9 @@
+/* 오프라인용 글꼴: 시안에 쓰인 글자만 담은 부분 글꼴 (Google Fonts, SIL Open Font License). station.html 문구를 바꾸면 다시 생성해야 합니다. */
+@font-face{font-family:'Big Shoulders Stencil Display';font-style:normal;font-weight:600;font-display:swap;src:url('big-shoulders-stencil-display-600.woff2') format('woff2')}
+@font-face{font-family:'Big Shoulders Stencil Display';font-style:normal;font-weight:800;font-display:swap;src:url('big-shoulders-stencil-display-800.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url('ibm-plex-mono-400.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url('ibm-plex-mono-600.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Sans KR';font-style:normal;font-weight:400;font-display:swap;src:url('ibm-plex-sans-kr-400.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Sans KR';font-style:normal;font-weight:500;font-display:swap;src:url('ibm-plex-sans-kr-500.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Sans KR';font-style:normal;font-weight:700;font-display:swap;src:url('ibm-plex-sans-kr-700.woff2') format('woff2')}
+@font-face{font-family:'Nanum Pen Script';font-style:normal;font-weight:400;font-display:swap;src:url('nanum-pen-script-400.woff2') format('woff2')}
