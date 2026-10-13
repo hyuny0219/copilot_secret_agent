@@ -14,7 +14,7 @@
 | 파일명 | 용도 |
 |---|---|
 | `voice-intro.wav` 또는 `voice-intro.mp3` | START 후 본부 지령 음성 (현재 `voice-intro.wav` 적용됨) |
-| `bgm-m1.mp3` | 미션 01 투자운영파트 BGM (현재: music_for_videos - Spy) |
+| `bgm-m1.mp3` | 미션 01 콘텐츠기획파트 BGM (현재: music_for_videos - Spy) |
 | `bgm-m2.mp3` | 미션 02 글로벌U/W기획 BGM (현재: Sonican - Secret Agent Loop 2 Slick Spy) |
 | `bgm-m3.mp3` | 미션 03 기획파트 BGM (현재: Pietix - Spy Agent Action) |
 | `bgm-open.mp3` | 오프닝(지령 대기)·엔딩 BGM (현재: Sound4Stock - Spy Agent Mission Music) |
