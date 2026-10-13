@@ -412,6 +412,41 @@ body.kiosk .stage-wrap{position:fixed;inset:0;width:100vw;height:100vh;max-width
 .bench .up{color:#1F7A4D} .bench .dn{color:#1F7A4D}
 .src{font-size:13px;color:var(--ink-mute);display:flex;flex-direction:column;gap:2px}
 
+/* ---------- mission 2: trip DB workspace / pack ---------- */
+.t2{display:grid;grid-template-columns:270px minmax(0,1fr) 250px;grid-template-rows:minmax(0,1fr) auto;gap:12px;padding:12px;height:calc(100% - 42px)}
+.win.narrow .t2{grid-template-columns:200px minmax(0,1fr) 190px}
+.t2>div{background:#fff;border:1px solid var(--rule);padding:10px 12px;display:flex;flex-direction:column;gap:7px;min-width:0;overflow:hidden}
+.t2 small{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;color:var(--ink-mute)}
+.t2-db{grid-row:1 / 3}
+.trip{border:1px solid #ECE8E0;padding:7px 9px;display:flex;flex-direction:column;gap:2px;font-size:12px;line-height:1.4}
+.trip i{font-style:normal;font-family:var(--f-mono);font-size:10.5px;color:#fff;background:#1B4F9C;align-self:flex-start;padding:1px 6px}
+.trip b{font-size:13px}.trip span{color:var(--ink-mute)}
+.t2-net table{width:100%;border-collapse:collapse;font-size:12.5px}
+.t2-net th,.t2-net td{border-bottom:1px solid #EEE9E0;padding:6px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t2-net th{background:#F4F1EA;font-weight:500;color:#4A515C}
+.t2-net td:last-child{color:#C28A12}
+.t2-news{font-size:12.5px;line-height:1.4}.t2-news b{font-size:13px}.t2-news span{color:var(--ink-mute);font-size:11px;margin-top:-4px}
+.t2-form{grid-column:2 / 4}
+.t2-task{font-size:12.5px;display:flex;gap:8px;align-items:center;border-bottom:1px solid #EEE9E0;padding:4px 0}.t2-task b{font-size:10.5px;font-weight:600;color:#fff;background:#1F7A4D;padding:1px 6px}.t2-task b.h{background:#9A9384}
+.t2-blank{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.t2-blank span{border:2px dashed #C9C3B5;padding:8px;font-size:12px;color:#9A9384;display:flex;flex-direction:column;gap:6px}
+.t2-blank i{height:6px;background:#EEE9E0}
+.t2r{position:absolute;inset:0;background:#E9ECF2;padding:14px 18px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:14px}
+.pack{background:#fff;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 4px 12px rgba(16,28,61,.12);overflow:hidden}
+.pack-h{font-size:19px;font-weight:700;color:#101C3D;display:flex;flex-direction:column;gap:2px;border-bottom:2px solid #101C3D;padding-bottom:6px}
+.pack-h small{font-family:var(--f-mono);font-size:10.5px;font-weight:400;color:var(--ink-mute);letter-spacing:.06em}
+.pk h4{margin:0 0 6px;font-size:13px;color:#1B4F9C}
+.mt{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;border:1px solid #E1E6F0;border-radius:6px;padding:6px 8px;margin-bottom:5px;font-size:12px;line-height:1.4;color:#4A515C}
+.mt i{font-style:normal;width:22px;height:22px;border-radius:50%;background:#101C3D;color:#fff;display:grid;place-items:center;font-family:var(--f-mono);font-size:11px}
+.mt b{color:#101C3D;font-size:13px;margin-right:6px}.mt em{font-style:normal;font-size:11px;color:#1B4F9C;margin-right:6px}
+.mt span{display:block}.mt u{display:block;text-decoration:none;margin-top:2px}
+#p-agenda{margin-top:40px}
+.is{display:grid;grid-template-columns:30px 1fr;font-size:12.5px;padding:5px 0;border-bottom:1px dashed #E1E6F0}.is i{font-style:normal;font-family:var(--f-mono);font-size:11px;color:#C28A12;font-weight:600}
+.ag{display:grid;grid-template-columns:52px 1fr;font-size:12.5px;padding:4px 0;border-bottom:1px dashed #E1E6F0}.ag b{color:#1B4F9C;font-family:var(--f-mono);font-size:11.5px}
+.form.t2f{position:relative;inset:auto;border-radius:8px;padding:14px 18px;box-shadow:0 4px 12px rgba(16,28,61,.12)}
+.t2f .form-title{font-size:22px;letter-spacing:.3em}
+.t2f .f th{width:104px}
+.t2f .f td,.t2f .f th{height:31px;font-size:13px}
 /* ---------- mission 2 form ---------- */
 .form{position:absolute;inset:0;background:#fff;padding:20px 34px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
 .form-title{font-size:26px;font-weight:700;text-align:center;letter-spacing:.4em;padding-bottom:6px;border-bottom:3px double var(--ink)}
@@ -628,31 +663,72 @@ function m1Result(){
     <div class="ncstate" data-g id="n1-state">[CARDNEWS_STATE]<br>series_topic: <b>간병비 물가 상승</b><br>style: <b>NAVY INSIGHT</b><br>completed_cards: <b>5</b><br>next_card: 없음<br>status: <b>DONE</b><br>locked_design: 1080×1080 · #101C3D #091229 #4776FF #AFC7FF</div>
   </div>`;
 }
-function formHTML(filled){
-  const F=(v)=>`<span class="fill" data-g data-v="${esc(v)}">${filled?esc(v):''}</span>`;
-  const plan=[['10.19 (월)','인천 → 런던','출국 · 히드로 도착 후 숙소 이동'],['10.20 (화)','런던 시티','재보험 파트너사 A · 2027 갱신 조건 협의'],['10.21 (수)','런던 시티','브로커 B 미팅 · 시장 동향 세션'],['10.22 (목)','런던 시티','언더라이팅 가이드라인 공유 워크숍'],['10.23 (금)','런던 → 인천','귀국']];
-  const cost=[['항공료','인천-런던 왕복 · 일반석','1,850,000'],['숙박비','4박 × £220 (규정 한도 £230)','1,628,000'],['일비','5일 × 130,000','650,000'],['현지 교통비','공항철도 · 시내 교통','200,000']];
-  return `<div class="form">
-    <div class="form-title">해외출장 품의서</div>
-    <table class="f">
-      <tr><th>기안자</th><td>${F('김○○ 책임 · 글로벌U/W기획')}</td><th>기안일</th><td>${F('2026.10.02')}</td></tr>
-      <tr id="f-where"><th>출장지</th><td>${F('영국 런던')}</td><th>출장기간</th><td>${F('2026.10.19 (월) ~ 10.23 (금) · 4박 5일')}</td></tr>
-      <tr id="f-purpose"><th>출장목적</th><td colspan="3">${F('런던 재보험 파트너사와 2027년 갱신 조건 협의 및 언더라이팅 가이드라인 공유')}</td></tr>
-    </table>
-    <div class="f-sec">세부 일정</div>
-    <table class="f grid" id="f-plan"><tr><th style="width:120px">일자</th><th style="width:150px">장소</th><th>내용</th></tr>
-      ${plan.map(r=>`<tr><td>${F(r[0])}</td><td>${F(r[1])}</td><td>${F(r[2])}</td></tr>`).join('')}
-    </table>
-    <div class="f-sec">경비 내역 <small>해외출장 규정 제12조 적용 · 환율 £1 = 1,850원</small></div>
-    <table class="f grid" id="f-cost"><tr><th style="width:140px">항목</th><th>산출 근거</th><th style="width:150px">금액 (원)</th></tr>
-      ${cost.map(r=>`<tr><td>${F(r[0])}</td><td>${F(r[1])}</td><td class="n">${F(r[2])}</td></tr>`).join('')}
-      <tr class="sum"><td>합계</td><td></td><td class="n">${F('4,328,000')}</td></tr>
-    </table>
-    <div class="approve"><div><span>기안</span><b>${filled?'김○○':''}</b></div><div><span>파트장</span><b></b></div><div><span>팀장</span><b></b></div><div><span>본부장</span><b></b></div></div>
+function m2Blank(){
+  return `
+  <div class="tabs"><span class="tab on">출장 DB · 과거 출장 결과보고서</span><span class="tab">출장 네트워크 DB</span><span class="tab">파트너사 협업 현황.xlsx</span><span class="tab">해외출장 품의서 (새 기안)</span></div>
+  <div class="t2">
+    <div class="t2-db" id="t2-db"><small>ONEDRIVE · 출장 결과보고서 47건</small>
+      <div class="trip"><i>2025.11</i><b>런던 · A사 정기 협의 결과보고서</b><span>CUO 면담 · 2027 협업 범위 논의</span></div>
+      <div class="trip"><i>2025.06</i><b>런던 · 브로커 C사 마켓 방문</b><span>영국 시장 요율 동향 · 채널 확대</span></div>
+      <div class="trip"><i>2024.10</i><b>런던 · A사 U/W 워크숍</b><span>데이터 협업 실무 과제 도출</span></div>
+      <div class="trip"><i>2024.03</i><b>취리히 · 재보험사 B 협의</b><span>포트폴리오 솔루션 사례 공유</span></div>
+      <div class="trip"><i>2023.09</i><b>런던 · 영국법인 업무 점검</b><span>담당자 변경 · 인수인계 메모</span></div>
+    </div>
+    <div class="t2-net" id="t2-net"><small>ONEDRIVE · 출장 네트워크 DB · A사</small>
+      <table><tr><th>대상 (익명)</th><th>소속 · 역할</th><th>최근 접촉</th><th>관계</th></tr>
+        <tr><td>A사 CUO</td><td>최고언더라이팅책임자</td><td>2025.11</td><td>★★★</td></tr>
+        <tr><td>A사 PS 총괄</td><td>Portfolio Solutions</td><td>2025.11</td><td>★★</td></tr>
+        <tr><td>A사 실무책임자</td><td>U/W Operations · Data</td><td>2024.10</td><td>★★</td></tr>
+        <tr><td>C사 런던 담당</td><td>글로벌 브로커</td><td>2025.06</td><td>★</td></tr></table>
+      <small style="margin-top:8px">파트너사 협업 현황.xlsx · A사 진행 과제</small>
+      <div class="t2-task"><b>진행</b>Portfolio Solutions 공동 사업 기회 검토</div>
+      <div class="t2-task"><b>진행</b>U/W 데이터 협업 실무 과제</div>
+      <div class="t2-task"><b class="h">보류</b>영국 브로커 채널 확대 · 담당자 변경으로 중단</div>
+    </div>
+    <div class="t2-news" id="t2-news"><small>WEB · 공시 · 뉴스</small>
+      <b>영국 재보험 시장 요율 안정세</b><span>보험 전문지 · 2026.09</span>
+      <b>A사, 포트폴리오 솔루션 사업 확대 발표</b><span>A사 공시 · 2026.08</span>
+      <b>런던 마켓, U/W 데이터 표준화 추진</b><span>업계 리포트 · 2026.07</span>
+    </div>
+    <div class="t2-form" id="t2-form"><small>해외출장 품의서 · 새 기안</small>
+      <div class="t2-blank"><span>출장지 <i></i></span><span>기간 <i></i></span><span>목적 <i></i></span><span>출장 아젠다 <i></i></span><span>미팅 일정 <i></i></span></div></div>
+  </div>
+  <div class="toast"><small>NEW ORDER · 본부장</small>영국 A사 협업 확대 출장 · 다음 주 출국</div>`;
+}
+function m2Result(){
+  const F=v=>`<span class="fill" data-g data-v="${esc(v)}"></span>`;
+  const meet=[['A사 CUO','최고언더라이팅책임자','2025.11 협의 후속 · 2027 협업 범위 확정'],['A사 PS 총괄','Portfolio Solutions','공동 사업 기회 구체화'],['A사 실무책임자','U/W Operations · Data','데이터 협업 실무 과제 합의'],['C사 런던 담당','글로벌 브로커','런던 시장 동향 · 채널 의견 청취']];
+  const plan=[['1일차','인천 → 런던 · 영국법인 사전 점검'],['1일차','A사 PS 총괄 · 공동 사업 기회'],['2일차','A사 CUO 면담 · 협업 범위'],['2일차','A사 실무책임자 · 데이터 협업'],['3일차','C사 미팅 · Wrap-up'],['3일차','런던 → 인천']];
+  return `<div class="t2r">
+    <div class="pack">
+      <div class="pack-h" data-g>출장 사전 PACK <small>과거 출장 3건 · 네트워크 DB 근거</small></div>
+      <div class="pk" id="p-meet"><h4 data-g>핵심 추천 미팅</h4>
+        ${meet.map((r,k)=>`<div class="mt" data-g><i>${k+1}</i><span><b>${r[0]}</b><em>${r[1]}</em><u>${r[2]}</u></span></div>`).join('')}</div>
+      <div class="pk" id="p-agenda" data-g><h4>권고 3일 구조 · 출장 아젠다</h4>
+        <div class="ag"><b>1일차</b>영국법인 사전 점검 · 공동 사업 기회</div>
+        <div class="ag"><b>2일차</b>CUO 면담 · 데이터 협업 실무 합의</div>
+        <div class="ag"><b>3일차</b>브로커 시장 의견 · Wrap-up</div></div>
+      <div class="pk" id="p-issue" data-g><h4>미팅 안건 · 핵심 협의 이슈</h4>
+        <div class="is"><i>01</i>Portfolio Solutions 공동 사업 기회 구체화</div>
+        <div class="is"><i>02</i>U/W 데이터 협업 실무 과제 및 추진 체계 합의</div>
+        <div class="is"><i>03</i>영국 시장 요율 동향 · 브로커 채널 확대 의견</div></div>
+    </div>
+    <div class="form t2f">
+      <div class="form-title" data-g>출장 품의서</div>
+      <table class="f">
+        <tr><th>출장자</th><td>${F('김○○ 프로 · 글로벌UW기획파트')}</td></tr>
+        <tr id="f-where"><th>출장지 · 기간</th><td>${F('영국 런던 · 3일간')}</td></tr>
+        <tr id="f-purpose"><th>목적</th><td>${F('A사 협업 확대 · 공동 사업 기회 구체화 및 실무 협업 과제 합의')}</td></tr>
+      </table>
+      <div class="f-sec" data-g>출장 일정 · 미팅 일정 (잠정)</div>
+      <table class="f grid" id="f-plan"><tr><th style="width:84px">구분</th><th>주요 일정</th></tr>
+        ${plan.map(r=>`<tr><td>${F(r[0])}</td><td>${F(r[1])}</td></tr>`).join('')}
+      </table>
+      <div class="f-sec" data-g>주요 협의 안건</div>
+      <table class="f" id="f-issue"><tr><td>${F('① 공동 사업 기회 구체화  ② 데이터 협업 과제 합의  ③ 시장 동향 · 채널 의견')}</td></tr></table>
+    </div>
   </div>`;
 }
-function m2Blank(){return formHTML(false)+`<div class="toast"><small>NEW MAIL · 본부장</small>[긴급] 런던 출장 요청 · 다음 주 월요일 출국</div>`}
-function m2Result(){return formHTML(false)}
 
 function m3Blank(){
   return `<div class="browser">
@@ -720,33 +796,35 @@ const MISSIONS=[
       bl:'카드뉴스 1세트', before:72, after:2, unit:'시간', bLabel:'3일', aLabel:'2시간', extra:'주제 입력부터 5장 생성까지 대화 몇 번이면 끝',
       tools:'Microsoft 365 Copilot 에이전트 만들기 · OneDrive 지식', apply:['마케팅','홍보','상품 안내','고객 안내문']}
 },
-{ key:'m2', no:'02', dept:'글로벌U/W기획', agent:'AGENT BLUE', emb:'B', color:'#4C8DFF',
+{ key:'m2', no:'02', dept:'글로벌UW기획파트', agent:'AGENT BLUE', emb:'B', color:'#4C8DFF',
   cardLines:['--w:76%','--w:92%','--w:60%'],
-  title:'긴급 지령: 영국 이동',
-  directive:'Agent! 지금 바로 영국으로 이동하라는 지령이 내려왔습니다. 20분 안에 출장 품의를 올리십시오!',
-  limit:'20분', clearance:'L3 · URGENT', timer:1200, timerLabel:'품의 마감까지',
-  sideTitle:'ORDER: LONDON', sideText:'출장 목적은 메일 속에, 일정은 캘린더에, 경비 한도는 규정집에 흩어져 있습니다. 남은 시간 20분.',
-  winTitle:'전자결재 · 새 기안 · 해외출장 품의서', winApp:'', resTitle:'전자결재 · 해외출장 품의서 (작성 중)', resApp:'',
+  title:'긴급 지령: 영국 출장',
+  directive:'Agent! 영국 파트너 A사와의 협업을 확대하라는 지령이 내려왔습니다. 과거 출장 기록을 바탕으로 출장 아젠다와 미팅 안건을 준비하고, 10분 안에 출장 품의를 올리십시오!',
+  limit:'10분', clearance:'L3 · URGENT', timer:600, timerLabel:'품의 마감까지',
+  sideTitle:'ORDER: LONDON', sideText:'누구를 만나야 할까? 지난 출장 기록은 흩어져 있고, 담당자는 바뀌었습니다. 남은 시간 10분.',
+  winTitle:'출장 DB · 과거 출장 · 네트워크 · 협업 현황', winApp:'', resTitle:'출장 사전 PACK + 출장 품의서 (초안)', resApp:'',
   blank:m2Blank, result:m2Result,
-  pain:{h:'빈 양식, 남은 시간 20분',l:['출장 목적과 일정은 메일 속에','경비 한도는 규정집 제12조에','숙박비는 환율까지 직접 계산']},
-  cursor:[[520,190],[880,380],[640,560],[1080,640]], btn:[1452,738],
-  files:[['E-01','[긴급] 런던 출장 요청','메일 4통','mail'],['E-02','내 캘린더 · 10월','일정 23건','cal'],['E-03','해외출장 규정.pdf','제12조','pdf']],
-  sugg:['받은 메일 요약','이번 주 일정 정리','품의서 초안 작성'],
-  greet:'요원, 지령 수신. 메일과 일정, 출장 규정을 확인했습니다. 품의서를 작성할까요?',
-  prompt:'어제 받은 [긴급] 런던 출장 요청 메일과 내 10월 일정을 참고해서 해외출장 품의서를 작성해줘. 출장 규정의 숙박 한도와 일비를 적용하고, 세부 일정표와 경비 내역을 표로 만들어줘. 겹치는 일정이 있으면 알려줘.',
-  keywords:['런던 출장 요청 메일','10월 일정','해외출장 품의서','숙박 한도와 일비','세부 일정표','경비 내역','겹치는 일정'],
+  pain:{h:'누구를 만나야 할지부터 막막',l:['과거 출장 자료는 부서·개인별로 흩어져','파트너 접촉 이력은 기존 출장자 머릿속에','아젠다·품의서는 매번 처음부터 수기 작성']},
+  cursor:[[300,260],[700,240],[1240,260],[900,640]], btn:[1452,738],
+  copilotAgent:'글로벌 업무팀 N/W 관리 인텔리전스',
+  files:[['E-01','출장 품의서·결과보고서','OneDrive','docx'],['E-02','출장 네트워크·협업 현황','OneDrive','xlsx'],['WEB','공시·뉴스','웹 검색','web']],
+  sugg:['과거 출장 사례 찾기','미팅 대상 추천','출장 품의서 작성'],
+  greet:'요원, 지령 수신. 과거 출장 기록과 네트워크 DB를 확인했습니다. 어디로, 누구를 만나러 가시나요?',
+  prompt:'나는 영국으로 3일간 A사와 협업을 확대하기 위한 목적으로 출장을 갈거야. 과거 출장을 바탕으로 출장 아젠다와 미팅을 추천해주고 해당 내용을 바탕으로 출장 품의서를 작성해줘',
+  keywords:['영국으로 3일간','A사와 협업을 확대','과거 출장','출장 아젠다와 미팅을 추천','출장 품의서'],
   steps:[
-    {t:'긴급 출장 요청 메일 확인',d:'출장지 런던 · 10/19~23 · 목적: 재보험 갱신 협의',g:'E-01 Outlook',sel:'#f-where'},
-    {t:'내 일정 확인',d:'10/21 주간회의 충돌 → 대리 참석 요청 초안 작성',g:'E-02 캘린더',sel:'#f-plan'},
-    {t:'해외출장 규정 적용',d:'숙박 한도 £230/박 · 일비 13만원/일 적용',g:'E-03 규정 제12조',sel:'#f-cost'},
-    {t:'품의서 양식 채우기',d:'일정표 · 경비표 · 결재선 자동 구성',g:'전자결재 양식',sel:'#f-purpose'}],
-  doneMsg:'품의서 작성 완료 · 규정 위반 항목 0건',
-  checks:[{sel:'#f-cost',note:'히드로 공항철도 포함 확인 ✓',dx:320,dy:-26},{sel:'#f-purpose',note:'협의 안건 3건 첨부',dx:560,dy:40}],
+    {t:'유사 출장 사례 조회',d:'A사 관련 과거 출장 3건 · 결과보고서 분석',g:'E-01 결과보고서',sel:'#t2-db'},
+    {t:'유관 네트워크·프로젝트 확인',d:'A사 접촉 이력 4명 · 진행 과제 2건',g:'E-02 네트워크 DB',sel:'#t2-net'},
+    {t:'시장자료 보완·핵심 이슈 도출',d:'공시·뉴스 기반 영국 시장 동향 · 협의 안건 3건',g:'WEB 공시·뉴스',sel:'#t2-news'},
+    {t:'아젠다·미팅 추천 · 품의서 생성',d:'핵심 미팅 4건 · 권고 3일 구조 · 품의서 초안',g:'품의서 양식',sel:'#t2-form'}],
+  doneMsg:'출장 사전 PACK · 품의서 초안 완료 · 추천 미팅 4건',
+  checks:[{sel:'#p-meet',note:'미팅 상대 최신 직책·연락 가능 여부 확인',dx:60,dy:252},{sel:'#f-plan',note:'항공편 확인 필요',dx:250,dy:-30}],
   stamp:'상신 완료',
-  cs:{no:'CASE #002', title:'해외 출장 품의 자동 작성', who:'글로벌U/W기획 · 해외 출장 담당',
-      flow:['메일·일정·규정을 오가며 품의 작성에 1시간','출장 요청 메일, 내 캘린더, 해외출장 규정','메일과 일정을 근거로 품의서 작성과 규정 적용을 지시','일정표와 경비표가 채워진 품의서','10분 만에 상신, 규정 위반 반려 0건'],
-      bl:'품의 작성', before:60, after:10, unit:'분', extra:'출장 품의 반려율 18% → 0%',
-      quote:'규정집을 다시 펼쳐볼 일이 없어졌어요', tools:'Outlook · Microsoft 365 Copilot Chat · 전자결재 양식', apply:['해외 출장자 전원','총무','교육 담당','영업']}
+  steal:'나는 영국으로 3일간 OO사와 협업을 확대하기 위한 목적으로 출장을 갈거야. 과거 출장을 바탕으로 출장 아젠다와 미팅을 추천해주고 해당 내용을 바탕으로 출장 품의서를 작성해줘',
+  cs:{no:'CASE #002', title:'출장 아젠다·미팅 추천과 품의서 작성', who:'글로벌UW기획파트',
+      flow:['과거 출장 자료와 파트너 네트워크가 개인별로 흩어져 매번 처음부터 준비','출장 품의서·결과보고서, 출장 네트워크·협업 현황(OneDrive), 공시·뉴스','출장 목적·일정·국가 입력 → 과거 이력 분석 → 시장자료 보완','핵심 추천 미팅 · 권고 3일 구조 · 출장 품의서 초안','품의 작성 60분 → 10분, 개인 네트워크를 조직 자산으로'],
+      bl:'출장 품의 작성', before:60, after:10, unit:'분', extra:'과거 출장·네트워크를 근거로 만날 사람까지 추천',
+      tools:'Microsoft 365 Copilot 에이전트 만들기 · OneDrive 지식', apply:['해외 출장자 전원','영업','제휴·파트너십','대외협력']}
 },
 { key:'m3', no:'03', dept:'기획파트', agent:'AGENT RED', emb:'R', color:'#E5484D',
   cardLines:['--w:84%','--w:66%','--w:90%'],
@@ -1276,10 +1354,10 @@ function rOutro(m,c){
 
 /* ===================== NOTES (below stage) ===================== */
 $('#notes').innerHTML=MISSIONS.map(m=>`<div class="note" style="--c:${m.color}"><div class="who">MISSION ${m.no} · ${m.agent}</div><h3>${esc(m.dept)} · ${esc(m.title)}</h3>
-  <ol><li>시작 화면: ${m.key==='m1'?'보험·금융 기사와 통계가 쌓인 자료함 + 빈 카드뉴스 5칸':m.key==='m2'?'빈 해외출장 품의서 + 20분 카운트다운':'해외 보험사 IR 홈페이지'}</li>
+  <ol><li>시작 화면: ${m.key==='m1'?'보험·금융 기사와 통계가 쌓인 자료함 + 빈 카드뉴스 5칸':m.key==='m2'?'과거 출장 결과보고서·네트워크 DB·협업 현황 + 빈 품의서 + 10분 카운트다운':'해외 보험사 IR 홈페이지'}</li>
   <li>Copilot 호출 → 데이터 ${m.files.length}건 첨부 → 프롬프트 입력·전송</li>
   <li>처리 4단계: 화면 위 근거 위치를 하나씩 표시</li>
-  <li>결과물: ${m.key==='m1'?'NAVY INSIGHT 스타일 카드뉴스 5장':m.key==='m2'?'일정·경비가 채워진 품의서':'출처가 달린 실적 비교 브리핑'}</li>
+  <li>결과물: ${m.key==='m1'?'NAVY INSIGHT 스타일 카드뉴스 5장':m.key==='m2'?'핵심 추천 미팅·권고 3일 구조(출장 사전 PACK) + 출장 품의서':'출처가 달린 실적 비교 브리핑'}</li>
   <li>사람 검토(빨간 펜) → ${esc(m.cs.no)} 실제 사례 공개</li></ol></div>`).join('');
 
 /* ===================== WIRING ===================== */
