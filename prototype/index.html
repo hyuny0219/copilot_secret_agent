@@ -99,9 +99,10 @@ body.kiosk .stage-wrap{position:fixed;inset:0;width:100vw;height:100vh;max-width
 .t-main .c{display:block;font-family:var(--f-ui);font-weight:700;font-size:84px;letter-spacing:-.01em;background:var(--cp-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .t-main .s{display:block;font-family:var(--f-display);font-weight:800;font-size:150px;letter-spacing:.04em;color:#F2F4F7}
 .t-sub{font-family:var(--f-mono);font-size:15px;letter-spacing:.32em;color:var(--mute)}
-.start-btn{margin-top:14px;font-family:var(--f-display);font-weight:800;font-size:46px;letter-spacing:.24em;padding:12px 60px 12px 72px;border:3px solid #fff;background:rgba(12,15,19,.6);color:#fff;cursor:pointer;animation:startPulse 1.8s ease-in-out infinite;transition:background .2s,color .2s}
+.start-btn{margin-top:14px;font-family:var(--f-display);font-weight:800;font-size:46px;letter-spacing:.24em;padding:12px 60px 12px 72px;border:3px solid #fff;background:rgba(12,15,19,.6);color:#fff;cursor:pointer;transition:background .2s,color .2s}
+.start-btn::after{content:"";position:absolute;inset:-3px;border:3px solid rgba(255,255,255,.5);pointer-events:none;animation:startPulse 1.8s ease-out infinite}
 .start-btn:hover,.start-btn:focus-visible{background:#fff;color:var(--hq)}
-@keyframes startPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}60%{box-shadow:0 0 0 18px rgba(255,255,255,0)}}
+@keyframes startPulse{0%{transform:scale(1);opacity:1}60%,100%{transform:scale(1.1,1.45);opacity:0}}
 .t-hint{font-size:18px;color:var(--mute)}
 .t-stamp{position:absolute;right:150px;top:90px;font-family:var(--f-display);font-weight:800;font-size:40px;letter-spacing:.08em;color:var(--alert);border:5px solid var(--alert);padding:0 16px;transform:rotate(12deg);opacity:.75}
 .tx{width:980px;display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:center;background:rgba(20,25,32,.85);border:1px solid var(--line);border-left:4px solid var(--agent);padding:14px 20px}
@@ -169,11 +170,14 @@ body.kiosk .stage-wrap{position:fixed;inset:0;width:100vw;height:100vh;max-width
 .sa-btn{position:absolute;right:24px;bottom:22px;z-index:30;display:flex;align-items:center;gap:12px;color:var(--cp-ink);border:2.5px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--cp-grad) border-box;border-radius:40px;padding:10px 24px 10px 12px;font-family:var(--f-ui);font-weight:700;font-size:22px;line-height:1.05;opacity:0;transform:translateY(20px);transition:all .5s;cursor:default;box-shadow:0 10px 26px rgba(0,0,0,.25)}
 .sa-btn .emb{width:36px;height:36px}
 .sa-btn small{display:block;font-family:var(--f-mono);font-weight:600;font-size:10px;letter-spacing:.16em;color:var(--cp-mute);margin-top:3px}
-.sa-btn.on{opacity:1;transform:none;animation:pulse 1.6s ease-in-out infinite}
-.sa-btn.press{transform:scale(.92);animation:none;background:var(--cp-grad) border-box;color:#fff}
+.sa-btn::after{content:"";position:absolute;inset:-3px;border:3px solid rgba(139,92,246,.7);border-radius:40px;pointer-events:none;opacity:0}
+.sa-btn.on{opacity:1;transform:none}
+.sa-btn.on::after{animation:pulse 1.6s ease-out infinite}
+.sa-btn.press{transform:scale(.92);background:var(--cp-grad) border-box;color:#fff}
 .sa-btn.press small{color:#fff}
-.sa-btn.gone{opacity:0;pointer-events:none;animation:none}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(139,92,246,.7)}70%{box-shadow:0 0 0 18px rgba(139,92,246,0)}100%{box-shadow:0 0 0 0 rgba(139,92,246,0)}}
+.sa-btn.press::after,.sa-btn.gone::after{animation:none;opacity:0}
+.sa-btn.gone{opacity:0;pointer-events:none}
+@keyframes pulse{0%{transform:scale(1);opacity:1}70%,100%{transform:scale(1.12,1.55);opacity:0}}
 
 .hit{outline:3px solid var(--hit)!important;outline-offset:3px;box-shadow:0 0 0 9px rgba(242,181,58,.22)!important;transition:outline-color .3s}
 .hit-tag{position:absolute;z-index:25;background:var(--hit);color:#231A05;font-family:var(--f-mono);font-size:12px;font-weight:600;padding:3px 8px;letter-spacing:.04em;white-space:nowrap;animation:pop .3s ease-out both}
@@ -544,12 +548,14 @@ body.kiosk .stage-wrap{position:fixed;inset:0;width:100vw;height:100vh;max-width
 .outro h2{font-family:var(--f-display);font-weight:800;font-size:120px;letter-spacing:.05em;margin:0;line-height:.9;color:var(--ac)}
 .outro p{font-size:28px;margin:0;color:#C9D0D9}
 .outro .cd{font-family:var(--f-mono);font-size:16px;color:var(--mute);letter-spacing:.14em}
+.home-btn{margin-top:6px;font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:.2em;padding:8px 40px 8px 48px;border:3px solid #fff;background:rgba(12,15,19,.6);color:#fff;cursor:pointer;transition:background .2s,color .2s}
+.home-btn:hover,.home-btn:focus-visible{background:#fff;color:var(--hq)}
 
 /* ---------- click gates ---------- */
 .gate{cursor:pointer!important}
-.ghint{position:absolute;z-index:70;pointer-events:none;border-radius:12px;box-shadow:0 0 0 9999px rgba(5,7,10,.5);animation:gIn .35s ease-out both}
+.ghint{position:absolute;z-index:70;pointer-events:none;border-radius:12px;box-shadow:0 0 0 2400px rgba(5,7,10,.5)}
 .ghint::before{content:"";position:absolute;inset:-7px;border:3px solid #fff;border-radius:15px;animation:gPulse 1.2s ease-in-out infinite}
-.ghint b{position:absolute;left:50%;top:calc(100% + 16px);transform:translateX(-50%);white-space:nowrap;background:#fff;color:#111;font-family:var(--f-ui);font-weight:700;font-size:20px;padding:9px 18px;border-radius:26px;box-shadow:0 10px 24px rgba(0,0,0,.4)}
+.ghint b{position:absolute;left:50%;top:calc(100% + 16px);transform:translateX(-50%);white-space:nowrap;background:#fff;color:#111;font-family:var(--f-ui);font-weight:700;font-size:20px;padding:9px 18px;border-radius:26px;box-shadow:0 10px 24px rgba(0,0,0,.4);animation:gIn .35s ease-out both}
 .ghint b::before{content:"CLICK";font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;color:#fff;background:#6D4AE8;padding:3px 8px;border-radius:10px;margin-right:10px;vertical-align:3px}
 .ghint.above b{top:auto;bottom:calc(100% + 16px)}
 .ghint.right b{left:auto;right:0;transform:none}
@@ -1018,7 +1024,7 @@ function moveCur(x,y){const c=$('#cur');if(c){c.style.left=x+'px';c.style.top=y+
 let EMB=`<svg class="emb" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="8" width="16" height="19" rx="7" fill="url(#cpg1)" transform="rotate(-20 11 17.5)"/><rect x="13" y="5" width="16" height="19" rx="7" fill="url(#cpg2)" opacity=".9" transform="rotate(-20 21 14.5)"/></svg>`;
 /* 공식 로고: assets/copilot-logo.svg 파일이 있으면 자동으로 공식 로고로 교체됩니다 (없으면 위 임시 엠블럼 사용). */
 const LOGO_PATH='assets/copilot-logo.svg';
-(function(){const im=new Image();im.onload=()=>{EMB=`<img class="emb" src="${LOGO_PATH}" alt="Microsoft Copilot">`;if(typeof st!=='undefined'&&st.screen==='title'&&!st.playing)rTitle()};im.src=LOGO_PATH})();
+const logoReady=new Promise(res=>{const im=new Image();im.onload=()=>{EMB=`<img class="emb" src="${LOGO_PATH}" alt="Microsoft Copilot">`;$$('svg.emb').forEach(e=>{e.outerHTML=EMB});res()};im.onerror=res;im.src=LOGO_PATH});
 const FIC={pdf:['PDF','#D23C3C'],xlsx:['X','#1E8E4E'],docx:['W','#2B5FD9'],mail:['M','#1F6FD1'],cal:['31','#7A4DD8'],web:['www','#5B5B66']};
 const fcard=f=>{const t=FIC[f[3]]||FIC.pdf;return `<span class="fcard"><span class="fic" style="background:${t[1]}">${t[0]}</span><span class="fn">${esc(f[1])}</span><i>${esc(f[2])}</i></span>`};
 function winHTML(m,mode,narrow){
@@ -1383,7 +1389,9 @@ function rCase(m,c){
 function rOutro(m,c){
   bgmStart('end');
   main.innerHTML=`<div class="outro"><div class="eyebrow">${m.agent} · MISSION ${m.no}</div><h2>MISSION COMPLETE</h2>
-    <p>${esc(m.cs.no)} 기밀 해제 완료 · 자리로 돌아가 같은 지시를 Copilot에 입력해 보세요</p><div class="cd" id="cd">다음 요원을 기다립니다 · 8</div></div>`;
+    <p>${esc(m.cs.no)} 기밀 해제 완료 · 자리로 돌아가 같은 지시를 Copilot에 입력해 보세요</p><div class="cd" id="cd">다음 요원을 기다립니다 · 8</div>
+    <button class="home-btn" id="homebtn">처음으로</button></div>`;
+  $('#homebtn').addEventListener('click',goIdle);
   for(let k=1;k<=8;k++)c.at(k*1000,()=>{const e=$('#cd');if(e)e.textContent='다음 요원을 기다립니다 · '+Math.max(0,8-k)});
 }
 
@@ -1421,7 +1429,10 @@ document.addEventListener('keydown',e=>{
 });
 setInterval(()=>{const d=new Date();$('#clock').textContent=d.toTimeString().slice(0,8)},1000);
 
-buildProg();rTitle();requestAnimationFrame(n=>S.loop(n));
+buildProg();requestAnimationFrame(n=>S.loop(n));
+/* 로고·글꼴이 준비된 뒤 첫 화면을 그림: 대체 글꼴·임시 엠블럼으로 그렸다가 다시 그려지며 깜빡이는 것을 막음 (최대 0.8초 대기) */
+const fontsReady=()=>{try{const a=[];document.fonts.forEach(f=>a.push(f.load().catch(()=>{})));return Promise.all(a)}catch(e){return Promise.resolve()}};
+Promise.race([Promise.all([logoReady,fontsReady()]),new Promise(r=>setTimeout(r,800))]).then(()=>{if(st.screen==='title'&&!st.playing&&!main.firstChild)rTitle()});
 })();
 </script>
 
